@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+  body{background:#211b15;color:#EDE8DF;font-family:'Archivo',sans-serif;overflow-x:hidden}
+  ::selection{background:#C1442E;color:#211b15}
+  @keyframes tos-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @keyframes tos-marquee-rev{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+  @keyframes tos-grain{0%,100%{transform:translate(0,0)}10%{transform:translate(-5%,-5%)}30%{transform:translate(3%,-8%)}50%{transform:translate(-7%,3%)}70%{transform:translate(5%,5%)}90%{transform:translate(-3%,7%)}}
+  @keyframes tos-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  @keyframes tos-spin{to{transform:rotate(360deg)}}
+  @keyframes tos-pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+  @keyframes tos-fadein{from{opacity:0}to{opacity:1}}
+  @keyframes tos-ping{0%{transform:translate(-50%,-50%) scale(.35);opacity:.9}100%{transform:translate(-50%,-50%) scale(2.8);opacity:0}}
+  @keyframes tos-radar{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  @keyframes tos-tw{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.25)}}
+  @keyframes tos-creed-open{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+  @keyframes tos-glitch{0%{transform:translate(-3px,1px)}25%{transform:translate(3px,-2px)}50%{transform:translate(-2px,2px)}75%{transform:translate(2px,-1px)}100%{transform:translate(-3px,1px)}}
+  @keyframes tos-flash{0%{opacity:0}8%{opacity:1}100%{opacity:0}}
+  .tos-burger{display:none}
+  @media (max-width:760px){
+    .tos-nav-links{display:none !important}
+    .tos-burger{display:flex !important}
+    .tos-follow-btn{display:none !important}
+    .tos-hero-word{font-size:23vw !important}
+    /* refined, restrained mobile type */
+    h2{font-size:clamp(26px,8vw,34px) !important;line-height:.94 !important;letter-spacing:0 !important}
+    h3{font-size:clamp(21px,6vw,26px) !important}
+    .tos-marquee{font-size:26px !important}
+    .tos-cstat{font-size:34px !important}
+    .tos-cbody{min-width:0 !important;font-size:13px !important;line-height:1.55 !important}
+    /* The Looks: swipeable card carousel instead of 6 cramped panels */
+    .tos-gallery{height:auto !important;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;gap:12px !important;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+    .tos-gpanel{flex:0 0 76% !important;height:auto !important;aspect-ratio:3/4;scroll-snap-align:center}
+    /* product + vault grids: 2 columns instead of 1 giant card */
+    .tos-prodgrid{grid-template-columns:1fr 1fr !important;gap:10px !important}
+    .tos-prodgrid span[style*="19px"]{font-size:15px !important}
+    .tos-vaultgrid{grid-template-columns:1fr 1fr !important;gap:10px !important}
+  }
+  @media (max-width:600px){
+    .tos-sec-pad{padding-top:54px !important;padding-bottom:54px !important}
+    #showroom,#creed,#drop,#lookbook,#claim,#contact{padding-top:52px !important;padding-bottom:52px !important}
+  }
+  .tos-gallery::-webkit-scrollbar{height:0}
+  @media (hover:none){ .tos-cursor{display:none !important} }
+</style>
+</helmet>
+
+<div style="position:relative;width:100%;min-height:100vh;background:#211b15;cursor:none">
+
+  <div class="tos-cursor" style="position:fixed;top:0;left:0;width:14px;height:14px;border:1px solid #EDE8DF;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .25s cubic-bezier(.16,1,.3,1),height .25s cubic-bezier(.16,1,.3,1),background .25s,border-color .25s;mix-blend-mode:difference" ref="{{ cursorRef }}"></div>
+
+  <div style="position:fixed;inset:0;z-index:8000;pointer-events:none;opacity:.05;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%222%22/></filter><rect width=%22200%22 height=%22200%22 filter=%22url(%23n)%22/></svg>');animation:tos-grain 1.2s steps(2) infinite"></div>
+
+  <canvas id="tos-sparkle" style="position:fixed;inset:0;z-index:6000;pointer-events:none;width:100%;height:100%;mix-blend-mode:screen;opacity:.6"></canvas>
+
+  <canvas id="tos-cursor-trail" style="position:fixed;inset:0;z-index:9100;pointer-events:none;width:100%;height:100%;mix-blend-mode:screen"></canvas>
+
+  <div id="tos-loader" style="position:fixed;inset:0;z-index:9500;background:radial-gradient(125% 100% at 50% 38%,#2c241b 0%,#1a1510 68%);overflow:hidden;transition:transform 1.15s cubic-bezier(.85,0,.15,1);transform:translateY({{ loaderShift }})" ref="{{ loaderRef }}">
+    <canvas id="tos-loader-canvas" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+    <div style="position:absolute;left:0;top:0;width:100%;padding:26px clamp(20px,5vw,56px);display:flex;justify-content:space-between;align-items:center;pointer-events:none">
+      <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.4em;color:#938d83;text-transform:uppercase">TOS</span>
+      <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.4em;color:#938d83;text-transform:uppercase">EST. 2026</span>
+    </div>
+    <div style="position:absolute;left:0;bottom:0;width:100%;padding:0 clamp(20px,5vw,56px) clamp(26px,5vh,46px);display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none">
+      <div style="font-family:'Archivo';font-weight:600;font-size:11px;letter-spacing:.5em;color:#938d83;text-transform:uppercase">The Only Survivor</div>
+      <div style="display:flex;align-items:baseline;gap:9px;font-family:'Anton',sans-serif">
+        <span style="font-size:clamp(44px,8vw,96px);line-height:.78;letter-spacing:-.02em;color:#EDE8DF">{{ count }}</span>
+        <span style="font-family:'Archivo';font-weight:700;font-size:13px;letter-spacing:.2em;color:#C1442E">%</span>
+      </div>
+    </div>
+  </div>
+
+  <nav style="position:fixed;top:0;left:0;width:100%;z-index:7000;display:flex;align-items:center;justify-content:space-between;padding:26px clamp(20px,5vw,56px);mix-blend-mode:difference">
+    <a href="#top" data-cursor="link" onClick="{{ noop }}" style="font-family:'Anton',sans-serif;font-size:24px;letter-spacing:.04em;color:#EDE8DF;text-decoration:none">TOS</a>
+    <div class="tos-nav-links" style="display:flex;gap:34px;align-items:center">
+      <a href="#showroom" data-cursor="link" style="display:flex;align-items:center;gap:7px;font-family:'Archivo';font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#EDE8DF;text-decoration:none"><span style="width:5px;height:5px;border-radius:50%;background:{{ showroomActive }};transition:background .3s"></span>Looks</a>
+      <a href="#creed" data-cursor="link" style="display:flex;align-items:center;gap:7px;font-family:'Archivo';font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#EDE8DF;text-decoration:none"><span style="width:5px;height:5px;border-radius:50%;background:{{ creedActive }};transition:background .3s"></span>Creed</a>
+      <a href="#drop" data-cursor="link" style="display:flex;align-items:center;gap:7px;font-family:'Archivo';font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#EDE8DF;text-decoration:none"><span style="width:5px;height:5px;border-radius:50%;background:{{ dropActive }};transition:background .3s"></span>Drop 001</a>
+      <a href="#lookbook" data-cursor="link" style="display:flex;align-items:center;gap:7px;font-family:'Archivo';font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#EDE8DF;text-decoration:none"><span style="width:5px;height:5px;border-radius:50%;background:{{ lookbookActive }};transition:background .3s"></span>Lookbook</a>
+      <a href="#claim" data-cursor="link" style="display:flex;align-items:center;gap:7px;font-family:'Archivo';font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#EDE8DF;text-decoration:none"><span style="width:5px;height:5px;border-radius:50%;background:{{ claimActive }};transition:background .3s"></span>ID Card</a>
+      <a href="#contact" data-cursor="link" style="display:flex;align-items:center;gap:7px;font-family:'Archivo';font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#EDE8DF;text-decoration:none"><span style="width:5px;height:5px;border-radius:50%;background:{{ contactActive }};transition:background .3s"></span>Contact</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <a href="https://www.instagram.com/tosurviver" target="_blank" data-cursor="link" data-magnet class="tos-follow-btn" style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#EDE8DF;text-decoration:none;border:1px solid #EDE8DF;padding:9px 16px;border-radius:100px">Follow</a>
+      <button onClick="{{ onOpenCart }}" data-cursor="link" data-magnet style="cursor:none;display:flex;align-items:center;gap:7px;font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#15120D;background:#EDE8DF;border:none;padding:9px 16px;border-radius:100px">Bag<span style="display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;font-size:10px;font-variant-numeric:tabular-nums">{{ cartCount }}</span></button>
+      <button onClick="{{ onToggleMenu }}" class="tos-burger" aria-label="Menu" style="cursor:pointer;width:42px;height:42px;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:none;border:1px solid #EDE8DF;border-radius:50%;padding:0">
+        <span style="width:16px;height:1.5px;background:#EDE8DF;display:block"></span>
+        <span style="width:16px;height:1.5px;background:#EDE8DF;display:block"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div style="position:fixed;top:0;left:0;height:2px;width:100%;z-index:7050;pointer-events:none;background:transparent"><div style="height:100%;width:{{ scrollW }};background:linear-gradient(90deg,#C1442E,#E0A85C);transition:width .12s linear"></div></div>
+
+  <div style="position:fixed;inset:0;z-index:8900;background:#15110d;transform:translateX({{ menuX }});transition:transform .55s cubic-bezier(.76,0,.24,1);display:flex;flex-direction:column;padding:24px clamp(20px,5vw,56px) 40px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span style="font-family:'Anton',sans-serif;font-size:24px;color:#EDE8DF">TOS</span>
+      <button onClick="{{ onCloseMenu }}" aria-label="Close" style="cursor:pointer;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid #3a332b;border-radius:50%;color:#EDE8DF;font-size:18px">✕</button>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:4px">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+        <button onClick="{{ n.onJump }}" style="cursor:pointer;display:flex;align-items:center;gap:16px;background:none;border:none;text-align:left;padding:11px 0">
+          <span style="width:7px;height:7px;border-radius:50%;background:{{ n.dot }};flex:none;transition:background .3s"></span>
+          <span style="font-family:'Anton',sans-serif;font-size:clamp(30px,9vw,46px);text-transform:uppercase;color:{{ n.col }};line-height:1;transition:color .3s">{{ n.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:24px;border-top:1px solid #3a332b;padding-top:24px">
+      <a href="https://www.instagram.com/tosurviver" target="_blank" style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.16em;color:#EDE8DF;text-decoration:none">INSTAGRAM ↗</a>
+      <a href="mailto:hello@tosurviver.com" style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.16em;color:#EDE8DF;text-decoration:none">EMAIL ↗</a>
+    </div>
+  </div>
+
+  <section id="top" style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 clamp(20px,5vw,56px) clamp(40px,6vh,64px);overflow:hidden">
+    <img src="images/hero.png" alt="TOS SS26 campaign" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%" />
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,14,10,.5) 0%,rgba(18,14,10,.18) 30%,rgba(24,19,14,.55) 62%,rgba(33,27,21,.95) 100%)"></div>
+    <div style="position:absolute;top:-10%;right:-5%;width:55vw;height:55vw;max-width:760px;max-height:760px;background:radial-gradient(circle,rgba(193,68,46,.16) 0%,rgba(27,23,18,0) 65%);pointer-events:none"></div>
+    <div style="position:absolute;bottom:-15%;left:-10%;width:50vw;height:50vw;max-width:640px;max-height:640px;background:radial-gradient(circle,rgba(140,120,90,.16) 0%,rgba(27,23,18,0) 68%);pointer-events:none"></div>
+    <div style="position:absolute;left:clamp(20px,5vw,56px);top:38vh;writing-mode:vertical-rl;font-family:'Archivo';font-weight:600;font-size:11px;letter-spacing:.5em;color:#938d83;text-transform:uppercase">EST. 2026 — NO MASTERS</div>
+
+    <div style="position:relative;z-index:2">
+      <div data-reveal style="opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .2s,transform 1s cubic-bezier(.16,1,.3,1) .2s;display:flex;align-items:center;gap:14px;margin-bottom:18px">
+        <span style="width:36px;height:1px;background:#C1442E"></span>
+        <span style="font-family:'Archivo';font-weight:600;font-size:12px;letter-spacing:.34em;color:#C1442E;text-transform:uppercase">The Only Survivor</span>
+      </div>
+      <h1 class="tos-hero-word" data-reveal style="opacity:0;transform:translateY(40px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1) .35s,transform 1.1s cubic-bezier(.16,1,.3,1) .35s;font-family:'Anton',sans-serif;font-size:clamp(96px,21vw,340px);line-height:.78;letter-spacing:-.02em;text-transform:uppercase">TOS</h1>
+      <div data-reveal style="opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .55s,transform 1s cubic-bezier(.16,1,.3,1) .55s;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;margin-top:24px;border-top:1px solid #3a332b;padding-top:22px">
+        <p style="max-width:440px;font-size:15px;line-height:1.55;color:#cbc4ba;font-weight:500">The Only Survivor. A wardrobe for the ones who came back from hell and kept walking — the self-made, the unschooled, the unbroken. <span style="color:#EDE8DF;font-weight:700">Made for dreamers.</span></p>
+        <a href="#drop" data-cursor="link" data-magnet style="display:inline-flex;align-items:center;gap:12px;font-family:'Archivo';font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#EDE8DF;text-decoration:none">Enter Drop 001 <span style="display:inline-block;width:40px;height:1px;background:#C1442E"></span></a>
+      </div>
+    </div>
+  </section>
+
+  <div style="background:#C1442E;color:#211b15;padding:18px 0;overflow:hidden;white-space:nowrap;border-top:1px solid #211b15;border-bottom:1px solid #211b15">
+    <div class="tos-marquee" style="display:inline-block;animation:tos-marquee 22s linear infinite;font-family:'Anton',sans-serif;font-size:clamp(30px,5vw,64px);text-transform:uppercase;letter-spacing:.01em">
+      <span data-skew style="display:inline-block;padding:0 28px;transition:transform .2s ease-out">SURVIVE ✶ NO MASTERS ✶ NO FLOCK ✶ LEAD YOUR OWN ✶ THE ONLY SURVIVOR ✶ SURVIVE ✶ NO MASTERS ✶ NO FLOCK ✶ LEAD YOUR OWN ✶ THE ONLY SURVIVOR ✶ </span>
+    </div>
+  </div>
+
+  <section id="showroom" style="position:relative;background:#E8E1D3;color:#15120D;padding:clamp(64px,11vh,140px) 0 clamp(80px,13vh,170px);overflow:hidden">
+    <div style="position:absolute;top:-25%;left:50%;transform:translateX(-50%);width:90vw;height:90vw;max-width:1200px;max-height:1200px;background:radial-gradient(circle,#FFFDF8 0%,rgba(232,225,211,0) 62%);pointer-events:none"></div>
+    <div style="position:absolute;bottom:-10%;right:-5%;width:40vw;height:40vw;max-width:520px;max-height:520px;background:radial-gradient(circle,rgba(193,68,46,.18) 0%,rgba(232,225,211,0) 70%);pointer-events:none"></div>
+    <div data-reveal style="opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:flex-end;padding:0 clamp(20px,5vw,56px);margin-bottom:clamp(20px,4vh,40px)">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <span style="width:30px;height:1px;background:#C1442E"></span>
+          <span style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#C1442E">THE LINEUP</span>
+        </div>
+        <h2 style="font-family:'Anton',sans-serif;font-size:clamp(46px,9.5vw,140px);line-height:.8;text-transform:uppercase">The looks</h2>
+      </div>
+      <p style="max-width:300px;font-size:13px;line-height:1.6;color:#5c564c;font-weight:500">Hover a panel to expand it — click to open the full frame. Every piece is a wearable canvas: surreal, hand-drawn, glitter-grained.</p>
+    </div>
+
+    <div style="position:relative;z-index:3;padding:0 clamp(20px,5vw,56px)">
+      <div class="tos-gallery" style="display:flex;gap:6px;height:clamp(360px,58vh,560px);width:100%">
+        <sc-for list="{{ panels }}" as="item" hint-placeholder-count="0">
+          <div onClick="{{ item.onClick }}" onMouseEnter="{{ item.onEnter }}" data-cursor="link" class="tos-gpanel" style="position:relative;flex:{{ item.grow }} 1 0%;min-width:0;height:100%;overflow:hidden;border-radius:3px;cursor:none;transition:flex-grow .75s cubic-bezier(.16,1,.3,1);box-shadow:0 26px 54px rgba(20,15,10,.22)">
+            {{ item.imgEl }}
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,12,9,.12) 0%,rgba(15,12,9,0) 38%,rgba(15,12,9,.82) 100%)"></div>
+            <span style="position:absolute;top:14px;left:14px;writing-mode:vertical-rl;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.28em;color:rgba(255,255,255,.85);text-transform:uppercase">{{ item.idx }}</span>
+            <div style="position:absolute;left:0;bottom:0;width:100%;padding:clamp(14px,1.5vw,24px);display:flex;align-items:flex-end;justify-content:space-between;gap:10px">
+              <div style="min-width:0">
+                <div style="font-family:'Anton',sans-serif;font-size:clamp(17px,1.7vw,28px);color:#fff;text-transform:uppercase;line-height:.95;white-space:nowrap">{{ item.label }}</div>
+                <div style="font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.22em;color:#E0A85C;text-transform:uppercase;margin-top:7px;white-space:nowrap;opacity:{{ item.revealO }};transition:opacity .5s ease">{{ item.sub }}</div>
+              </div>
+              <span style="flex:none;width:38px;height:38px;border:1px solid rgba(255,255,255,.55);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;opacity:{{ item.revealO }};transition:opacity .5s ease">↗</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:clamp(20px,4vh,40px)">
+        <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.3em;color:#5c564c">HOVER TO EXPAND · CLICK TO OPEN</span>
+        <span style="width:46px;height:1px;background:#15120D"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="creed" style="position:relative;padding:clamp(80px,14vh,160px) clamp(20px,5vw,56px);max-width:1400px;margin:0 auto"><div style="position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:70vw;height:60vw;max-width:900px;max-height:760px;background:radial-gradient(circle,rgba(193,68,46,.10) 0%,rgba(33,27,21,0) 65%);pointer-events:none"></div>
+    <div data-reveal style="opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;gap:14px;margin-bottom:clamp(40px,7vh,80px)">
+      <span style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#938d83">(THE CREED)</span>
+      <span style="flex:1;height:1px;background:#3a332b"></span>
+      <span style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#938d83">04 ARTICLES</span>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <div style="border-top:1px solid #3a332b">
+        <div data-reveal onClick="{{ creedToggle0 }}" data-cursor="link" style="opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);display:flex;flex-wrap:wrap;gap:clamp(16px,4vw,60px);align-items:baseline;padding:clamp(22px,4vh,40px) 0;cursor:none">
+          <span style="font-family:'Archivo';font-weight:700;font-size:13px;color:#C1442E;width:48px;flex:none">01</span>
+          <h3 style="font-family:'Anton',sans-serif;font-size:clamp(34px,6vw,76px);line-height:.92;text-transform:uppercase;flex:1;min-width:280px">Forged in fire</h3>
+          <p style="max-width:300px;font-size:14px;line-height:1.6;color:#9a948b;font-weight:500">We come from the bottom. The scars are the credentials.</p>
+          <span style="flex:none;width:36px;height:36px;border:1px solid #4a4339;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#EDE8DF;font-size:20px;transition:transform .45s cubic-bezier(.16,1,.3,1);transform:rotate({{ creedRot0 }})">+</span>
+        </div>
+        <sc-if value="{{ creed0Open }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:tos-creed-open .55s cubic-bezier(.16,1,.3,1) both;padding-bottom:clamp(24px,4vh,44px)">
+            <div style="position:relative;border-radius:6px;overflow:hidden;border:1px solid #3a332b;background:#0E0C09">
+              <canvas id="tos-fx-0" style="display:block;width:100%;height:clamp(200px,30vh,280px)"></canvas>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(18px,3vw,34px);background:linear-gradient(0deg,rgba(14,12,9,.92) 0%,rgba(14,12,9,.25) 55%,transparent 82%);pointer-events:none">
+                <div style="display:flex;align-items:flex-end;gap:clamp(16px,3vw,32px);flex-wrap:wrap">
+                  <div class="tos-cstat" style="font-family:'Anton',sans-serif;line-height:.85;color:#fff;font-size:clamp(48px,8vw,86px)"><span id="tos-stat-0">0</span>%</div>
+                  <p class="tos-cbody" style="flex:1;min-width:240px;max-width:560px;font-size:14px;line-height:1.62;color:#e2dccf;margin-bottom:6px">Adversity rebuilds what it breaks. Research on post-traumatic growth finds that half to two-thirds of survivors come out the other side with new strength, new purpose, new direction — the scars become the blueprint.</p>
+                </div>
+                <div style="margin-top:16px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.16em;color:#F2A93B;text-transform:uppercase">SOURCE — Meta-analysis, J. Affective Disorders; Psychology Today, 2025</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="border-top:1px solid #3a332b">
+        <div data-reveal onClick="{{ creedToggle1 }}" data-cursor="link" style="opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);display:flex;flex-wrap:wrap;gap:clamp(16px,4vw,60px);align-items:baseline;padding:clamp(22px,4vh,40px) 0;cursor:none">
+          <span style="font-family:'Archivo';font-weight:700;font-size:13px;color:#C1442E;width:48px;flex:none">02</span>
+          <h3 style="font-family:'Anton',sans-serif;font-size:clamp(34px,6vw,76px);line-height:.92;text-transform:uppercase;flex:1;min-width:280px">Billionaires without a degree</h3>
+          <p style="max-width:300px;font-size:14px;line-height:1.6;color:#9a948b;font-weight:500">The paper was never the point. Value is built, not certified.</p>
+          <span style="flex:none;width:36px;height:36px;border:1px solid #4a4339;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#EDE8DF;font-size:20px;transition:transform .45s cubic-bezier(.16,1,.3,1);transform:rotate({{ creedRot1 }})">+</span>
+        </div>
+        <sc-if value="{{ creed1Open }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:tos-creed-open .55s cubic-bezier(.16,1,.3,1) both;padding-bottom:clamp(24px,4vh,44px)">
+            <div style="position:relative;border-radius:6px;overflow:hidden;border:1px solid #3a332b;background:#0E0C09">
+              <canvas id="tos-fx-1" style="display:block;width:100%;height:clamp(200px,30vh,280px)"></canvas>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(18px,3vw,34px);background:linear-gradient(0deg,rgba(14,12,9,.92) 0%,rgba(14,12,9,.25) 55%,transparent 82%);pointer-events:none">
+                <div style="display:flex;align-items:flex-end;gap:clamp(16px,3vw,32px);flex-wrap:wrap">
+                  <div class="tos-cstat" style="font-family:'Anton',sans-serif;line-height:.85;color:#fff;font-size:clamp(48px,8vw,86px)"><span id="tos-stat-1">0</span>%</div>
+                  <p class="tos-cbody" style="flex:1;min-width:240px;max-width:560px;font-size:14px;line-height:1.62;color:#e2dccf;margin-bottom:6px">Roughly 1 in 6 of the world’s billionaires never earned a degree, and 12% of the Forbes 400 are college dropouts — Gates, Jobs, Ellison, Zuckerberg among them. The classroom was optional. The work was not.</p>
+                </div>
+                <div style="margin-top:16px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.16em;color:#9fcf9f;text-transform:uppercase">SOURCE — Forbes 400; global billionaire education study</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="border-top:1px solid #3a332b">
+        <div data-reveal onClick="{{ creedToggle2 }}" data-cursor="link" style="opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);display:flex;flex-wrap:wrap;gap:clamp(16px,4vw,60px);align-items:baseline;padding:clamp(22px,4vh,40px) 0;cursor:none">
+          <span style="font-family:'Archivo';font-weight:700;font-size:13px;color:#C1442E;width:48px;flex:none">03</span>
+          <h3 style="font-family:'Anton',sans-serif;font-size:clamp(34px,6vw,76px);line-height:.92;text-transform:uppercase;flex:1;min-width:280px">No system, no flock</h3>
+          <p style="max-width:300px;font-size:14px;line-height:1.6;color:#9a948b;font-weight:500">We don’t wait for permission. We set our own line.</p>
+          <span style="flex:none;width:36px;height:36px;border:1px solid #4a4339;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#EDE8DF;font-size:20px;transition:transform .45s cubic-bezier(.16,1,.3,1);transform:rotate({{ creedRot2 }})">+</span>
+        </div>
+        <sc-if value="{{ creed2Open }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:tos-creed-open .55s cubic-bezier(.16,1,.3,1) both;padding-bottom:clamp(24px,4vh,44px)">
+            <div style="position:relative;border-radius:6px;overflow:hidden;border:1px solid #3a332b;background:#0E0C09">
+              <canvas id="tos-fx-2" style="display:block;width:100%;height:clamp(200px,30vh,280px)"></canvas>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(18px,3vw,34px);background:linear-gradient(0deg,rgba(14,12,9,.92) 0%,rgba(14,12,9,.25) 55%,transparent 82%);pointer-events:none">
+                <div style="display:flex;align-items:flex-end;gap:clamp(16px,3vw,32px);flex-wrap:wrap">
+                  <div class="tos-cstat" style="font-family:'Anton',sans-serif;line-height:.85;color:#fff;font-size:clamp(48px,8vw,86px)"><span id="tos-stat-2">0</span>%</div>
+                  <p class="tos-cbody" style="flex:1;min-width:240px;max-width:560px;font-size:14px;line-height:1.62;color:#e2dccf;margin-bottom:6px">UBS calls 2025’s new fortunes the work of “bold business creation,” not inheritance — 196 people built billion-dollar companies their own way in a single year. Self-made wealth now holds 80% of the billionaire total.</p>
+                </div>
+                <div style="margin-top:16px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.16em;color:#8FC2F0;text-transform:uppercase">SOURCE — UBS Billionaire Ambitions Report 2025</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="border-top:1px solid #3a332b;border-bottom:1px solid #3a332b">
+        <div data-reveal onClick="{{ creedToggle3 }}" data-cursor="link" style="opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);display:flex;flex-wrap:wrap;gap:clamp(16px,4vw,60px);align-items:baseline;padding:clamp(22px,4vh,40px) 0;cursor:none">
+          <span style="font-family:'Archivo';font-weight:700;font-size:13px;color:#C1442E;width:48px;flex:none">04</span>
+          <h3 style="font-family:'Anton',sans-serif;font-size:clamp(34px,6vw,76px);line-height:.92;text-transform:uppercase;flex:1;min-width:280px">Survive, then lead</h3>
+          <p style="max-width:300px;font-size:14px;line-height:1.6;color:#9a948b;font-weight:500">The only survivor walks alone — then comes back for the others.</p>
+          <span style="flex:none;width:36px;height:36px;border:1px solid #4a4339;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#EDE8DF;font-size:20px;transition:transform .45s cubic-bezier(.16,1,.3,1);transform:rotate({{ creedRot3 }})">+</span>
+        </div>
+        <sc-if value="{{ creed3Open }}" hint-placeholder-val="{{ false }}">
+          <div style="animation:tos-creed-open .55s cubic-bezier(.16,1,.3,1) both;padding-bottom:clamp(24px,4vh,44px)">
+            <div style="position:relative;border-radius:6px;overflow:hidden;border:1px solid #3a332b;background:#0E0C09">
+              <canvas id="tos-fx-3" style="display:block;width:100%;height:clamp(200px,30vh,280px)"></canvas>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(18px,3vw,34px);background:linear-gradient(0deg,rgba(14,12,9,.92) 0%,rgba(14,12,9,.25) 55%,transparent 82%);pointer-events:none">
+                <div style="display:flex;align-items:flex-end;gap:clamp(16px,3vw,32px);flex-wrap:wrap">
+                  <div class="tos-cstat" style="font-family:'Anton',sans-serif;line-height:.85;color:#fff;font-size:clamp(26px,4vw,46px)">GRIT &gt; TALENT</div>
+                  <p class="tos-cbody" style="flex:1;min-width:240px;max-width:560px;font-size:14px;line-height:1.62;color:#e2dccf;margin-bottom:6px">Decades of research on grit — perseverance toward long-term goals — find it predicts who endures, and who leads, more reliably than talent or IQ. The ones still standing set the line everyone else follows.</p>
+                </div>
+                <div style="margin-top:16px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.16em;color:#C1442E;text-transform:uppercase">SOURCE — Duckworth, University of Pennsylvania (Grit, 2016)</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <section id="drop" style="position:relative;padding:clamp(40px,8vh,90px) clamp(20px,5vw,56px) clamp(80px,12vh,140px);max-width:1500px;margin:0 auto"><div style="position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:70vw;height:60vw;max-width:900px;max-height:760px;background:radial-gradient(circle,rgba(193,68,46,.10) 0%,rgba(33,27,21,0) 65%);pointer-events:none"></div>
+    <div data-reveal style="opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:clamp(34px,5vh,60px)">
+      <div>
+        <div style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#C1442E;margin-bottom:12px">DROP 001 — FIRST BLOOD</div>
+        <h2 style="font-family:'Anton',sans-serif;font-size:clamp(48px,10vw,140px);line-height:.82;text-transform:uppercase">The Armory</h2>
+      </div>
+      <p style="max-width:280px;font-size:13px;line-height:1.6;color:#938d83;font-weight:500">Heavyweight, garment-dyed, washed to look lived-in. Each graphic is an original TOS artwork.</p>
+    </div>
+    <div class="tos-prodgrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(12px,1.5vw,22px)">
+      <div data-reveal data-cursor="link" style="opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)">
+        <div data-tilt style="position:relative;background:#0E0C09;border:1px solid #3a332b;overflow:hidden;aspect-ratio:3/4;transition:transform .35s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d">
+          <img src="images/p-moon.png" alt="Ladder to the Moon Hoodie" onClick="{{ open.moon }}" style="width:100%;height:100%;object-fit:cover;object-position:center 30%;cursor:none" />
+          <span style="position:absolute;top:12px;left:12px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.2em;color:#EDE8DF;background:rgba(14,12,9,.7);padding:4px 8px">TOS–001</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px">
+          <span style="font-family:'Anton',sans-serif;font-size:19px;text-transform:uppercase;letter-spacing:.01em">Ladder to the Moon</span>
+          <span style="font-family:'Archivo';font-weight:700;font-size:14px;color:#9a948b">₪2,400</span>
+        </div>
+      </div>
+      <div data-reveal data-cursor="link" style="opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1) .08s,transform .9s cubic-bezier(.16,1,.3,1) .08s">
+        <div data-tilt style="position:relative;background:#EDE8DF;border:1px solid #3a332b;overflow:hidden;aspect-ratio:3/4;transition:transform .35s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d">
+          <img src="images/p-reality.png" alt="Questioned Reality Tee" onClick="{{ open.reality }}" style="width:100%;height:100%;object-fit:cover;object-position:center 35%;cursor:none" />
+          <span style="position:absolute;top:12px;left:12px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.2em;color:#EDE8DF;background:rgba(14,12,9,.7);padding:4px 8px">TOS–002</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px">
+          <span style="font-family:'Anton',sans-serif;font-size:19px;text-transform:uppercase;letter-spacing:.01em">Questioned Reality</span>
+          <span style="font-family:'Archivo';font-weight:700;font-size:14px;color:#9a948b">₪1,100</span>
+        </div>
+      </div>
+      <div data-reveal data-cursor="link" style="opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1) .16s,transform .9s cubic-bezier(.16,1,.3,1) .16s">
+        <div data-tilt style="position:relative;background:#EDE8DF;border:1px solid #3a332b;overflow:hidden;aspect-ratio:3/4;transition:transform .35s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d">
+          <img src="images/p-christ.png" alt="Redeemer Tee" onClick="{{ open.redeemer }}" style="width:100%;height:100%;object-fit:cover;object-position:center 35%;cursor:none" />
+          <span style="position:absolute;top:12px;left:12px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.2em;color:#EDE8DF;background:rgba(14,12,9,.7);padding:4px 8px">TOS–003</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px">
+          <span style="font-family:'Anton',sans-serif;font-size:19px;text-transform:uppercase;letter-spacing:.01em">Redeemer Tee</span>
+          <span style="font-family:'Archivo';font-weight:700;font-size:14px;color:#9a948b">₪1,100</span>
+        </div>
+      </div>
+      <div data-reveal data-cursor="link" style="opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1) .24s,transform .9s cubic-bezier(.16,1,.3,1) .24s">
+        <div data-tilt style="position:relative;background:#EDE8DF;border:1px solid #3a332b;overflow:hidden;aspect-ratio:3/4;transition:transform .35s cubic-bezier(.16,1,.3,1);transform-style:preserve-3d">
+          <img src="images/p-zip.png" alt="Not For The Sheep Zip Hoodie" onClick="{{ open.sheep }}" style="width:100%;height:100%;object-fit:cover;object-position:center 35%;cursor:none" />
+          <span style="position:absolute;top:12px;left:12px;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.2em;color:#EDE8DF;background:rgba(14,12,9,.7);padding:4px 8px">TOS–004</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:14px">
+          <span style="font-family:'Anton',sans-serif;font-size:19px;text-transform:uppercase;letter-spacing:.01em">Not For The Sheep</span>
+          <span style="font-family:'Archivo';font-weight:700;font-size:14px;color:#9a948b">₪2,950</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="position:relative;margin-top:clamp(40px,6vh,80px)">
+    <div data-reveal style="opacity:0;transform:translateY(40px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;height:clamp(440px,86vh,920px)">
+      <img src="images/group.png" alt="TOS campaign" onClick="{{ lb.group }}" data-cursor="link" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 28%;cursor:none" />
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,16,12,.4) 0%,rgba(20,16,12,0) 35%,rgba(20,16,12,.7) 100%);pointer-events:none"></div>
+      <div style="position:absolute;left:0;bottom:0;width:100%;padding:clamp(24px,4vw,56px);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:18px;pointer-events:none">
+        <h2 style="font-family:'Anton',sans-serif;font-size:clamp(44px,11vw,180px);line-height:.8;text-transform:uppercase;max-width:11ch">Made for dreamers</h2>
+        <span style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#EDE8DF">CAMPAIGN — SS26</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="lookbook" style="position:relative;padding:clamp(60px,10vh,120px) clamp(20px,5vw,56px) clamp(80px,12vh,140px);max-width:1500px;margin:0 auto">
+    <div data-reveal style="opacity:0;transform:translateY(40px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;border:1px solid #3a332b">
+      <img src="images/lineup.png" alt="TOS lookbook lineup" onClick="{{ lb.lineup }}" data-cursor="link" style="width:100%;height:clamp(420px,72vh,820px);object-fit:cover;object-position:center 30%;display:block;cursor:none" />
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(27,23,18,.55) 0%,rgba(27,23,18,0) 30%,rgba(27,23,18,.75) 100%);pointer-events:none"></div>
+      <div style="position:absolute;left:0;bottom:0;width:100%;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:18px;padding:clamp(22px,4vw,48px);pointer-events:none">
+        <h2 style="font-family:'Anton',sans-serif;font-size:clamp(40px,9vw,120px);line-height:.82;text-transform:uppercase;max-width:8ch">Wear the scar</h2>
+        <span style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#EDE8DF">LOOKBOOK / SS26</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="position:relative;padding:clamp(20px,3vh,40px) clamp(20px,5vw,56px) clamp(70px,11vh,130px);max-width:1500px;margin:0 auto">
+    <div data-reveal style="opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:clamp(20px,3vh,34px)">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="width:30px;height:1px;background:#C1442E"></span><span style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#C1442E">THE VAULT</span></div>
+        <h2 style="font-family:'Anton',sans-serif;font-size:clamp(40px,8vw,110px);line-height:.82;text-transform:uppercase">Every piece, a world</h2>
+      </div>
+      <p style="max-width:300px;font-size:13px;line-height:1.6;color:#938d83;font-weight:500">Tinkerbell pixie dust, rubber-duck flocks, salt on the map, the Redeemer sun — surreal stories, hand-built and glitter-grained.</p>
+    </div>
+    <div class="tos-vaultgrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(12px,1.5vw,20px)">
+      <div data-reveal data-cursor="link" data-tilt style="opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;border:1px solid #3a332b;aspect-ratio:4/5;transform-style:preserve-3d">
+        <img src="images/still.png" alt="TOS still life" onClick="{{ lb.still }}" style="width:100%;height:100%;object-fit:cover;cursor:none" />
+      </div>
+      <div data-reveal data-cursor="link" data-tilt style="opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.16,1,.3,1) .1s,transform .9s cubic-bezier(.16,1,.3,1) .1s;position:relative;overflow:hidden;border:1px solid #3a332b;aspect-ratio:4/5;transform-style:preserve-3d">
+        <img src="images/contact.png" alt="TOS contact sheet" onClick="{{ lb.contact }}" style="width:100%;height:100%;object-fit:cover;cursor:none" />
+      </div>
+    </div>
+  </section>
+
+  <section id="reveal-band" style="position:relative;height:clamp(340px,58vh,540px);overflow:hidden;background:#070605;border-top:1px solid #1c1a17;border-bottom:1px solid #1c1a17;cursor:none">
+    <div id="tos-spotglow" style="position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen"></div>
+    <div id="tos-spot" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 6vw;-webkit-mask-image:radial-gradient(circle 200px at var(--mx,50%) var(--my,50%),#000 0%,#000 32%,transparent 70%);mask-image:radial-gradient(circle 200px at var(--mx,50%) var(--my,50%),#000 0%,#000 32%,transparent 70%)">
+      <h2 style="font-family:'Anton',sans-serif;font-size:clamp(34px,7vw,104px);line-height:.9;text-transform:uppercase;color:#EDE8DF;margin:0">Most won't make it.<br/><span style="color:#C1442E">You already did.</span></h2>
+    </div>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+      <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.42em;color:#252019">MOVE YOUR LIGHT ✶</span>
+    </div>
+  </section>
+
+  <section style="position:relative;padding:clamp(80px,16vh,200px) clamp(20px,5vw,56px);text-align:center;border-top:1px solid #3a332b"><div style="position:absolute;inset:0;background:radial-gradient(60% 80% at 50% 50%,rgba(150,120,80,.12) 0%,rgba(33,27,21,0) 70%);pointer-events:none"></div>
+    <p data-reveal style="opacity:0;transform:translateY(30px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);max-width:1100px;margin:0 auto;font-family:'Anton',sans-serif;font-size:clamp(30px,6vw,82px);line-height:.98;text-transform:uppercase">They counted you out. <span style="color:#C1442E">You're still here.</span> That's the only flex.</p>
+  </section>
+
+  <section id="claim" style="position:relative;overflow:hidden;padding:clamp(70px,12vh,150px) clamp(20px,5vw,56px);border-top:1px solid #3a332b">
+    <div style="position:absolute;top:-12%;left:50%;transform:translateX(-50%);width:70vw;height:60vw;max-width:900px;max-height:760px;background:radial-gradient(circle,rgba(201,139,217,.10) 0%,rgba(33,27,21,0) 65%);pointer-events:none"></div>
+    <div style="position:relative;z-index:2;max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(40px,5vw,80px);align-items:center">
+      <div style="flex:1 1 380px;min-width:300px">
+        <div data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;gap:12px;margin-bottom:18px">
+          <span style="width:30px;height:1px;background:#C1442E"></span>
+          <span style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#C1442E">CLAIM YOUR NUMBER</span>
+        </div>
+        <h2 data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .08s,transform 1s cubic-bezier(.16,1,.3,1) .08s;font-family:'Anton',sans-serif;font-size:clamp(46px,8vw,112px);line-height:.82;text-transform:uppercase;margin-bottom:20px">Get your<br/>number</h2>
+        <p data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .16s,transform 1s cubic-bezier(.16,1,.3,1) .16s;max-width:430px;font-size:15px;line-height:1.6;color:#b9b2a8;margin-bottom:26px">A survivor gets a number, not a title. Type your name — your card is minted live, with an ID that's yours alone.</p>
+        <div data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .24s,transform 1s cubic-bezier(.16,1,.3,1) .24s;display:flex;align-items:center;border-bottom:1px solid #EDE8DF;max-width:430px">
+          <input value="{{ idName }}" onInput="{{ onIdInput }}" maxlength="22" placeholder="Type your name" style="flex:1;background:transparent;border:none;outline:none;color:#EDE8DF;font-family:'Anton',sans-serif;font-size:clamp(22px,3vw,34px);text-transform:uppercase;padding:10px 0;cursor:none" />
+          <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.2em;color:#73D6C2">LIVE ✶</span>
+        </div>
+        <p data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .3s,transform 1s cubic-bezier(.16,1,.3,1) .3s;margin-top:18px;font-family:'Archivo';font-weight:600;font-size:12px;letter-spacing:.04em;color:#76716A">Screenshot it. Wear the number. No two are alike. ✶ Psst — type <span style="color:#E0A85C">SURVIVE</span> anywhere.</p>
+      </div>
+
+      <div data-reveal style="opacity:0;transform:translateY(34px);transition:opacity 1.1s cubic-bezier(.16,1,.3,1) .15s,transform 1.1s cubic-bezier(.16,1,.3,1) .15s;flex:1 1 420px;min-width:300px;display:flex;justify-content:center">
+        <div id="tos-id-wrap" style="perspective:1100px;width:min(100%,440px)">
+          <div id="tos-idcard" data-cursor="link" style="position:relative;width:100%;aspect-ratio:1.586;border-radius:16px;overflow:hidden;transform-style:preserve-3d;will-change:transform;background:linear-gradient(150deg,#221d17 0%,#0c0a08 100%);box-shadow:0 40px 90px rgba(0,0,0,.55),inset 0 0 0 1px rgba(237,232,223,.08);cursor:none">
+            <div id="tos-idsheen" style="position:absolute;inset:-45%;background:linear-gradient(115deg,transparent 26%,rgba(143,194,240,.5) 40%,rgba(201,139,217,.55) 52%,rgba(115,214,194,.5) 62%,rgba(240,217,160,.55) 72%,transparent 84%);mix-blend-mode:screen;opacity:.4;pointer-events:none"></div>
+            <div style="position:absolute;right:-12px;bottom:-44px;font-family:'Anton',sans-serif;font-size:210px;line-height:1;color:rgba(237,232,223,.05);pointer-events:none">TOS</div>
+            <div style="position:absolute;inset:0;padding:clamp(18px,2.6vw,30px);display:flex;flex-direction:column;justify-content:space-between">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                <span style="font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.26em;color:#E0A85C">THE ONLY SURVIVOR</span>
+                <span style="font-family:'Anton',sans-serif;font-size:22px;color:#EDE8DF;line-height:1">TOS</span>
+              </div>
+              <div>
+                <div style="font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.24em;color:#938d83;margin-bottom:7px">MEMBER</div>
+                <div style="font-family:'Anton',sans-serif;font-size:clamp(26px,3.6vw,42px);text-transform:uppercase;color:#fff;line-height:.95;word-break:break-word">{{ idDisplay }}</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+                <div>
+                  <div style="font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.2em;color:#938d83">№</div>
+                  <div style="font-family:'Archivo';font-weight:700;font-size:15px;letter-spacing:.08em;color:#73D6C2">{{ idMember }}</div>
+                </div>
+                <div style="display:flex;gap:1.5px;align-items:flex-end;height:26px">{{ idBars }}</div>
+                <div style="text-align:right">
+                  <div style="font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.2em;color:#938d83">ISSUED</div>
+                  <div style="font-family:'Archivo';font-weight:700;font-size:13px;color:#EDE8DF">{{ idIssued }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="position:relative;overflow:hidden;padding:clamp(70px,12vh,150px) clamp(20px,5vw,56px);background:radial-gradient(120% 95% at 82% 8%,#16202e 0%,#131c28 32%,#1a1510 72%,#211b15 100%)">
+    <div style="position:absolute;top:-15%;left:-6%;width:46vw;height:46vw;max-width:620px;max-height:620px;background:radial-gradient(circle,rgba(143,194,240,.16) 0%,rgba(33,27,21,0) 65%);pointer-events:none"></div>
+    <div style="position:absolute;bottom:-22%;right:-8%;width:52vw;height:52vw;max-width:660px;max-height:660px;background:radial-gradient(circle,rgba(193,68,46,.16) 0%,rgba(33,27,21,0) 68%);pointer-events:none"></div>
+
+    <div style="position:relative;z-index:2;max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(36px,5vw,80px);align-items:center">
+      <div style="flex:1 1 420px;min-width:300px">
+        <div data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) 0s,transform 1s cubic-bezier(.16,1,.3,1) 0s;display:flex;align-items:center;gap:12px;margin-bottom:18px">
+          <span style="width:30px;height:1px;background:#C1442E"></span>
+          <span style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.3em;color:#C1442E">TRANSMIT</span>
+        </div>
+        <h2 data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .08s,transform 1s cubic-bezier(.16,1,.3,1) .08s;font-family:'Anton',sans-serif;font-size:clamp(46px,8vw,112px);line-height:.82;text-transform:uppercase;margin-bottom:20px">Send a<br/>signal</h2>
+        <p data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .16s,transform 1s cubic-bezier(.16,1,.3,1) .16s;max-width:440px;font-size:15px;line-height:1.6;color:#b9b2a8;margin-bottom:30px">Collabs, commissions, or just to say you made it through. We read everything — the studio answers from Miami.</p>
+
+        <form onSubmit="{{ onContactSubmit }}" data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .24s,transform 1s cubic-bezier(.16,1,.3,1) .24s;display:flex;flex-direction:column;gap:14px;max-width:470px">
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <input value="{{ cName }}" onInput="{{ onCName }}" placeholder="Name" style="flex:1;min-width:140px;background:rgba(11,10,9,.45);border:1px solid #344150;border-radius:2px;padding:14px 16px;color:#EDE8DF;font-family:'Archivo';font-weight:500;font-size:14px;outline:none" />
+            <input type="email" value="{{ cEmail }}" onInput="{{ onCEmail }}" placeholder="Email" style="flex:1;min-width:140px;background:rgba(11,10,9,.45);border:1px solid #344150;border-radius:2px;padding:14px 16px;color:#EDE8DF;font-family:'Archivo';font-weight:500;font-size:14px;outline:none" />
+          </div>
+          <textarea value="{{ cMsg }}" onInput="{{ onCMsg }}" placeholder="Your message" rows="3" style="background:rgba(11,10,9,.45);border:1px solid #344150;border-radius:2px;padding:14px 16px;color:#EDE8DF;font-family:'Archivo';font-weight:500;font-size:14px;outline:none;resize:vertical;min-height:96px"></textarea>
+          <button type="submit" data-cursor="link" data-magnet style="cursor:none;align-self:flex-start;padding:15px 30px;background:#C1442E;color:#15120D;border:none;border-radius:2px;font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:.16em;text-transform:uppercase">{{ contactBtn }}</button>
+        </form>
+
+        <div data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .3s,transform 1s cubic-bezier(.16,1,.3,1) .3s;display:flex;flex-wrap:wrap;gap:14px 36px;margin-top:34px">
+          <a href="mailto:hello@tosurviver.com" data-cursor="link" style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.12em;color:#EDE8DF;text-decoration:none">EMAIL — hello@tosurviver.com ↗</a>
+          <a href="https://www.instagram.com/tosurviver" target="_blank" data-cursor="link" style="font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.12em;color:#EDE8DF;text-decoration:none">INSTAGRAM — @tosurviver ↗</a>
+        </div>
+      </div>
+
+      <div data-reveal style="opacity:0;transform:translateY(28px);transition:opacity 1s cubic-bezier(.16,1,.3,1) .18s,transform 1s cubic-bezier(.16,1,.3,1) .18s;flex:1 1 420px;min-width:300px">
+        <div style="position:relative;width:100%;height:clamp(360px,52vh,520px);border:1px solid #2b3340;border-radius:8px;overflow:hidden;background:radial-gradient(110% 110% at 70% 28%,#16243a 0%,#0e1722 55%,#0a0e15 100%);box-shadow:0 40px 100px rgba(0,0,0,.5)">
+          <div style="position:absolute;left:50%;top:50%;width:80%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(115,214,194,.10) 42%,rgba(143,194,240,.07) 60%,transparent 72%);pointer-events:none"></div>
+          <canvas id="tos-globe" data-cursor="link" style="position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:pan-y"></canvas>
+          <div style="position:absolute;left:16px;top:14px;display:flex;align-items:center;gap:7px;pointer-events:none"><span style="width:6px;height:6px;border-radius:50%;background:#73D6C2;animation:tos-tw 1.4s infinite"></span><span style="font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.22em;color:#73D6C2">SIGNAL ONLINE</span></div>
+          <div style="position:absolute;right:16px;top:14px;font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.22em;color:rgba(237,232,223,.5);pointer-events:none">DRAG TO ORBIT</div>
+          <div style="position:absolute;left:16px;bottom:14px;display:flex;flex-direction:column;gap:7px;pointer-events:none">
+            <div style="display:flex;align-items:center;gap:8px"><span style="width:5px;height:5px;border-radius:50%;background:#8FC2F0;box-shadow:0 0 8px #8FC2F0"></span><span style="font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.1em;color:#cfe3f5">TEL AVIV <span id="tos-time-tlv" style="color:#8FC2F0">--:--:--</span></span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="width:5px;height:5px;border-radius:50%;background:#73D6C2;box-shadow:0 0 8px #73D6C2"></span><span style="font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.1em;color:#bfeede">MIAMI &nbsp;&nbsp;<span id="tos-time-mia" style="color:#73D6C2">--:--:--</span></span></div>
+          </div>
+          <div style="position:absolute;right:16px;bottom:14px;text-align:right;pointer-events:none">
+            <div style="font-family:'Anton',sans-serif;font-size:19px;color:#fff;letter-spacing:.02em">10,900 KM</div>
+            <div style="font-family:'Archivo';font-weight:700;font-size:9px;letter-spacing:.18em;color:rgba(237,232,223,.45)">TLV → MIA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="position:relative;background:#211b15;border-top:1px solid #3a332b;padding:clamp(50px,8vh,90px) clamp(20px,5vw,56px) 36px">
+    <div style="max-width:1500px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:48px">
+      <div style="flex:1;min-width:280px;max-width:520px">
+        <h3 style="font-family:'Anton',sans-serif;font-size:clamp(30px,5vw,56px);line-height:.92;text-transform:uppercase;margin-bottom:22px">Join the survivors</h3>
+        <p style="font-size:14px;line-height:1.6;color:#9a948b;margin-bottom:24px;max-width:380px">No spam. Just early access to drops, and the occasional reason to keep going.</p>
+        <form onSubmit="{{ onSubscribe }}" style="display:flex;border-bottom:1px solid #EDE8DF;max-width:420px;align-items:center">
+          <input type="email" required placeholder="your@email.com" value="{{ email }}" onInput="{{ onEmail }}" style="flex:1;background:transparent;border:none;outline:none;color:#EDE8DF;font-family:'Archivo';font-weight:500;font-size:15px;padding:12px 0" />
+          <button type="submit" data-cursor="link" style="background:none;border:none;cursor:none;font-family:'Archivo';font-weight:700;font-size:12px;letter-spacing:.2em;color:#C1442E;text-transform:uppercase;padding:12px 0 12px 16px">{{ subLabel }}</button>
+        </form>
+      </div>
+      <div style="display:flex;gap:clamp(40px,8vw,100px);flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.3em;color:#938d83;margin-bottom:6px">INDEX</span>
+          <a href="#creed" data-cursor="link" style="font-family:'Archivo';font-weight:600;font-size:14px;color:#EDE8DF;text-decoration:none">The Creed</a>
+          <a href="#drop" data-cursor="link" style="font-family:'Archivo';font-weight:600;font-size:14px;color:#EDE8DF;text-decoration:none">Drop 001</a>
+          <a href="#lookbook" data-cursor="link" style="font-family:'Archivo';font-weight:600;font-size:14px;color:#EDE8DF;text-decoration:none">Lookbook</a>
+          <a href="#contact" data-cursor="link" style="font-family:'Archivo';font-weight:600;font-size:14px;color:#EDE8DF;text-decoration:none">Contact</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.3em;color:#938d83;margin-bottom:6px">FOLLOW</span>
+          <a href="https://www.instagram.com/tosurviver" target="_blank" data-cursor="link" style="font-family:'Archivo';font-weight:600;font-size:14px;color:#EDE8DF;text-decoration:none">Instagram ↗</a>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1500px;margin:clamp(50px,8vh,90px) auto 0;border-top:1px solid #3a332b;padding-top:24px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;align-items:center">
+      <span style="font-family:'Anton',sans-serif;font-size:clamp(60px,16vw,220px);line-height:.7;letter-spacing:.02em;color:#2e2720;width:100%;order:-1;pointer-events:none">THE ONLY SURVIVOR</span>
+      <span style="font-family:'Archivo';font-weight:600;font-size:11px;letter-spacing:.16em;color:#938d83">© 2026 TOS — ALL RIGHTS, NO MASTERS</span>
+      <span style="font-family:'Archivo';font-weight:600;font-size:11px;letter-spacing:.16em;color:#938d83">DESIGNED TO OUTLAST</span>
+    </div>
+  </footer>
+
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseModal }}" data-cursor="link" style="position:fixed;inset:0;z-index:8600;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,40px);background:rgba(10,8,6,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:tos-fadein .35s ease both">
+      <div onClick="{{ stop }}" style="position:relative;width:min(1040px,100%);max-height:92vh;overflow:hidden;background:#1b1712;border:1px solid #3a332b;border-radius:4px;display:flex;flex-wrap:wrap;animation:tos-pop .5s cubic-bezier(.16,1,.3,1) both;box-shadow:0 50px 120px rgba(0,0,0,.6)">
+        <div style="position:relative;flex:1 1 380px;min-height:300px;background:{{ mBg }}">
+          {{ mImgEl }}
+        </div>
+        <div style="flex:1 1 360px;min-width:280px;padding:clamp(24px,3vw,48px);display:flex;flex-direction:column;justify-content:center;gap:18px">
+          <div style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.3em;color:#E0A85C">{{ mCode }} · DROP 001</div>
+          <h3 style="font-family:'Anton',sans-serif;font-size:clamp(34px,4.4vw,64px);line-height:.9;text-transform:uppercase">{{ mName }}</h3>
+          <div style="font-family:'Archivo';font-weight:700;font-size:22px;color:#EDE8DF">{{ mPrice }}</div>
+          <p style="font-size:14px;line-height:1.65;color:#9a948b;max-width:42ch">{{ mDesc }}</p>
+          <div>
+            <div style="font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.26em;color:#76716A;text-transform:uppercase;margin-bottom:10px">Select size</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{ sizes }}" as="sz" hint-placeholder-count="4">
+                <button onClick="{{ sz.onPick }}" data-cursor="link" style="cursor:none;min-width:52px;padding:11px 12px;font-family:'Archivo';font-weight:700;font-size:13px;letter-spacing:.08em;color:{{ sz.fg }};background:{{ sz.bg }};border:1px solid {{ sz.bd }};border-radius:2px;transition:all .2s">{{ sz.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+            <button onClick="{{ onAddToCart }}" data-cursor="link" style="cursor:none;flex:1;min-width:180px;padding:16px 22px;font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#15120D;background:#C1442E;border:none;border-radius:2px">Add to bag — {{ mPrice }}</button>
+            <button onClick="{{ onViewArt }}" data-cursor="link" style="cursor:none;padding:16px 20px;font-family:'Archivo';font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#EDE8DF;background:transparent;border:1px solid #4a4339;border-radius:2px">The artwork</button>
+          </div>
+        </div>
+        <button onClick="{{ onCloseModal }}" data-cursor="link" style="position:absolute;top:14px;right:14px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:none;background:rgba(11,10,9,.55);border:1px solid rgba(237,232,223,.25);border-radius:50%;color:#EDE8DF;font-size:18px">✕</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <div onClick="{{ onCloseCart }}" style="position:fixed;inset:0;z-index:8550;background:rgba(10,8,6,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:{{ scrimO }};pointer-events:{{ scrimPE }};transition:opacity .5s ease"></div>
+  <aside style="position:fixed;top:0;right:0;height:100%;width:min(430px,92vw);z-index:8560;background:#16120D;border-left:1px solid #3a332b;box-shadow:-40px 0 100px rgba(0,0,0,.5);transform:translateX({{ cartX }});transition:transform .6s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:24px clamp(18px,4vw,30px);border-bottom:1px solid #3a332b">
+      <span style="font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;letter-spacing:.02em">Your Bag</span>
+      <button onClick="{{ onCloseCart }}" data-cursor="link" style="cursor:none;width:38px;height:38px;background:none;border:1px solid #3a332b;border-radius:50%;color:#EDE8DF;font-size:16px">✕</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:8px clamp(18px,4vw,30px)">
+      <sc-if value="{{ emptyCart }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:60px 4px;text-align:center;color:#76716A;font-size:14px;line-height:1.7">Your bag is empty.<br/>The flock buys nothing. You build a uniform.</div>
+      </sc-if>
+      <sc-for list="{{ cartItems }}" as="item" hint-placeholder-count="0">
+        <div style="display:flex;gap:14px;padding:18px 0;border-bottom:1px solid #251f19">
+          <div style="width:64px;height:80px;flex:none;overflow:hidden;border-radius:2px;background:#0E0C09">{{ item.imgEl }}</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">
+            <span style="font-family:'Anton',sans-serif;font-size:16px;text-transform:uppercase">{{ item.name }}</span>
+            <span style="font-family:'Archivo';font-size:11px;letter-spacing:.08em;color:#76716A">{{ item.code }} · {{ item.sizeLabel }} · {{ item.qtyLabel }}</span>
+            <button onClick="{{ item.onRemove }}" data-cursor="link" style="cursor:none;align-self:flex-start;margin-top:4px;background:none;border:none;color:#C1442E;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:0">Remove</button>
+          </div>
+          <span style="font-family:'Archivo';font-weight:700;font-size:14px;color:#EDE8DF">{{ item.lineTotal }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="padding:20px clamp(18px,4vw,30px) 26px;border-top:1px solid #3a332b">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
+        <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.24em;color:#76716A;text-transform:uppercase">Subtotal</span>
+        <span style="font-family:'Anton',sans-serif;font-size:30px">{{ cartTotal }}</span>
+      </div>
+      <button onClick="{{ onCheckout }}" data-cursor="link" style="cursor:none;width:100%;padding:16px;font-family:'Archivo';font-weight:800;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#15120D;background:#EDE8DF;border:none;border-radius:2px">Checkout</button>
+      <sc-if value="{{ cartNote }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;text-align:center;font-family:'Archivo';font-size:11px;letter-spacing:.04em;color:#E0A85C;line-height:1.6;animation:tos-fadein .4s ease both">Drop 001 ships SS26 — checkout opens to survivors first. Join the list below ✶</div>
+      </sc-if>
+    </div>
+  </aside>
+
+  <button onClick="{{ onOpenCmd }}" data-cursor="link" style="position:fixed;left:clamp(16px,4vw,30px);bottom:clamp(16px,4vh,28px);z-index:7200;display:flex;align-items:center;gap:8px;background:rgba(20,17,13,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid #3a332b;border-radius:100px;padding:9px 15px;cursor:none;color:#EDE8DF;font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.1em">⌕ <span style="color:#76716A">TERMINAL</span> <span style="color:#76716A;border:1px solid #3a332b;border-radius:4px;padding:1px 5px;font-size:9px">⌘K</span></button>
+
+  <sc-if value="{{ cmdOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseCmd }}" data-cursor="link" style="position:fixed;inset:0;z-index:8800;display:flex;align-items:flex-start;justify-content:center;padding:11vh 18px 18px;background:rgba(8,6,5,.66);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:tos-fadein .22s ease both">
+      <div onClick="{{ stop }}" style="width:min(560px,100%);background:#15110d;border:1px solid #3a332b;border-radius:12px;overflow:hidden;box-shadow:0 50px 120px rgba(0,0,0,.6);animation:tos-pop .32s cubic-bezier(.16,1,.3,1) both">
+        <div style="display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid #251f19">
+          <span style="font-family:'Archivo';font-weight:800;color:#E0A85C;font-size:13px;letter-spacing:.1em">TOS</span>
+          <input id="tos-cmd-input" value="{{ cmdQuery }}" onInput="{{ onCmdInput }}" placeholder="Search the survivor terminal…" style="flex:1;background:transparent;border:none;outline:none;color:#EDE8DF;font-family:'Archivo';font-weight:500;font-size:15px;cursor:none" />
+          <span style="font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.1em;color:#76716A;border:1px solid #3a332b;border-radius:4px;padding:3px 6px">ESC</span>
+        </div>
+        <div style="max-height:46vh;overflow-y:auto;padding:8px">
+          <sc-for list="{{ cmdItems }}" as="c" hint-placeholder-count="0">
+            <div onClick="{{ c.onRun }}" onMouseEnter="{{ c.onHover }}" data-cursor="link" style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:8px;cursor:none;background:{{ c.bg }};transition:background .15s">
+              <span style="width:24px;text-align:center;color:#73D6C2;font-size:15px">{{ c.g }}</span>
+              <span style="flex:1;font-family:'Archivo';font-weight:600;font-size:14px;color:#EDE8DF">{{ c.label }}</span>
+              <span style="font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#76716A">{{ c.cat }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ cmdEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:26px;text-align:center;font-family:'Archivo';font-size:13px;color:#76716A">No survivors found.</div>
+          </sc-if>
+        </div>
+        <div style="display:flex;gap:18px;justify-content:center;padding:12px;border-top:1px solid #251f19;font-family:'Archivo';font-weight:700;font-size:10px;letter-spacing:.1em;color:#76716A">
+          <span>↑↓ NAVIGATE</span><span>↵ SELECT</span><span>ESC CLOSE</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ survMode }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:8700;display:flex;align-items:center;justify-content:center;pointer-events:none;background:rgba(11,10,9,.5);animation:tos-flash 2.6s ease both">
+      <div style="position:relative;text-align:center">
+        <div style="position:relative;font-family:'Anton',sans-serif;font-size:clamp(40px,11vw,150px);line-height:.85;text-transform:uppercase;color:#EDE8DF">
+          <span style="position:absolute;inset:0;color:#C1442E;mix-blend-mode:screen;animation:tos-glitch .3s steps(2) infinite">You're still here</span>
+          <span style="position:absolute;inset:0;color:#73D6C2;mix-blend-mode:screen;animation:tos-glitch .42s steps(2) infinite reverse">You're still here</span>
+          You're still here
+        </div>
+        <div style="margin-top:18px;font-family:'Archivo';font-weight:700;font-size:clamp(11px,1.4vw,14px);letter-spacing:.42em;color:#E0A85C">SURVIVOR MODE — UNLOCKED</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ idle }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:6400;pointer-events:none;animation:tos-fadein 1.3s ease both;background:radial-gradient(120% 100% at 50% 50%,transparent 26%,rgba(11,10,9,.55) 72%,rgba(11,10,9,.92) 100%)">
+      <div style="position:absolute;left:0;bottom:9%;width:100%;text-align:center">
+        <div style="font-family:'Anton',sans-serif;font-size:clamp(28px,5vw,64px);text-transform:uppercase;color:#EDE8DF;opacity:.9">Still standing?</div>
+        <div style="margin-top:10px;font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.42em;color:#938d83">MOVE TO RETURN</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ lbOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseLightbox }}" data-cursor="link" style="position:fixed;inset:0;z-index:8620;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:clamp(20px,5vw,70px);background:rgba(8,6,5,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:tos-fadein .35s ease both">
+      {{ lbImgEl }}
+      <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;justify-content:center;pointer-events:none">
+        <span style="font-family:'Anton',sans-serif;font-size:clamp(22px,3vw,40px);text-transform:uppercase">{{ lbLabel }}</span>
+        <span style="font-family:'Archivo';font-weight:700;font-size:11px;letter-spacing:.24em;color:#E0A85C;text-transform:uppercase">{{ lbSub }}</span>
+      </div>
+      <button onClick="{{ onCloseLightbox }}" data-cursor="link" style="position:fixed;top:24px;right:24px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:none;background:rgba(11,10,9,.6);border:1px solid rgba(237,232,223,.3);border-radius:50%;color:#EDE8DF;font-size:20px">✕</button>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  state = { count: 0, loaded: false, email: '', subscribed: false, cart: [], cartOpen: false, modalKey: null, modalSize: 'M', activePanel: 2, lightbox: null, cartNote: false, cName: '', cEmail: '', cMsg: '', cSent: false, creedOpen: null, idName: '', survMode: false, idle: false, cmdOpen: false, cmdQuery: '', cmdIndex: 0, scrollPct: 0, activeSec: 'top', menuOpen: false, toast: false };
+
+  _initIdCard() {
+    const wrap = document.getElementById('tos-id-wrap'), card = document.getElementById('tos-idcard'), sheen = document.getElementById('tos-idsheen');
+    if (!wrap || !card || this._idDone) return; this._idDone = true;
+    let tx = 0, ty = 0, cx = 0, cy = 0, hovering = false;
+    const apply = () => {
+      card.style.transform = 'perspective(1000px) rotateX(' + cy + 'deg) rotateY(' + cx + 'deg)';
+      if (sheen) { sheen.style.transform = 'translate(' + (cx * 5) + '%,' + (cy * -5) + '%)'; sheen.style.opacity = String(0.32 + Math.min(0.5, (Math.abs(cx) + Math.abs(cy)) / 22)); }
+    };
+    wrap.addEventListener('mousemove', (e) => { const r = wrap.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width - 0.5; ty = (e.clientY - r.top) / r.height - 0.5; hovering = true; });
+    wrap.addEventListener('mouseleave', () => { hovering = false; });
+    const loop = (now) => {
+      if (!hovering) { const a = now * 0.0006; tx = Math.sin(a) * 0.36; ty = Math.cos(a * 0.8) * 0.16; }
+      cx += (tx * 18 - cx) * 0.08; cy += (ty * -18 - cy) * 0.08; apply();
+      this._idRaf = requestAnimationFrame(loop);
+    };
+    loop(performance.now());
+  }
+
+  _triggerSurv() {
+    this.setState({ survMode: true });
+    if (this._ctBurst) this._ctBurst();
+    clearTimeout(this._survT); this._survT = setTimeout(() => this.setState({ survMode: false }), 2600);
+  }
+
+  _cmdBase() {
+    return [
+      { g: '⊹', label: 'Drop 001 — The Armory', cat: 'Shop', sel: '#drop' },
+      { g: '❋', label: 'The Looks', cat: 'Browse', sel: '#showroom' },
+      { g: '§', label: 'The Creed', cat: 'Read', sel: '#creed' },
+      { g: '◳', label: 'Lookbook — SS26', cat: 'Browse', sel: '#lookbook' },
+      { g: '⌖', label: 'Claim your ID number', cat: 'Mint', sel: '#claim', focusInput: true },
+      { g: '✉', label: 'Send a signal', cat: 'Contact', sel: '#contact' },
+      { g: '⊕', label: 'Open your bag', cat: 'Cart', action: 'cart' },
+      { g: '✦', label: 'Unlock Survivor Mode', cat: 'Secret', action: 'surv' },
+      { g: '↗', label: 'Follow @tosurviver', cat: 'Social', action: 'ig' },
+      { g: '⌂', label: 'Back to top', cat: 'Go', sel: '#top' }
+    ];
+  }
+  _filteredCmds() {
+    const q = this.state.cmdQuery.trim().toLowerCase(), base = this._cmdBase();
+    if (!q) return base;
+    const sub = (t) => { t = t.toLowerCase(); let i = 0; for (const c of q) { i = t.indexOf(c, i); if (i < 0) return false; i++; } return true; };
+    return base.filter(c => (c.label + ' ' + c.cat).toLowerCase().includes(q) || sub(c.label));
+  }
+  _focusCmd() { requestAnimationFrame(() => { const el = document.getElementById('tos-cmd-input'); if (el) el.focus(); }); }
+  _openCmd() { this.setState({ cmdOpen: true, cmdQuery: '', cmdIndex: 0 }, () => this._focusCmd()); }
+  _moveCmd(d) { const n = this._filteredCmds().length; if (!n) return; this.setState(s => ({ cmdIndex: (s.cmdIndex + d + n) % n })); }
+  _runCurrentCmd() { const list = this._filteredCmds(); const c = list[Math.min(this.state.cmdIndex, list.length - 1)]; if (c) this._runCmd(c); }
+  _runCmd(c) {
+    this.setState({ cmdOpen: false });
+    setTimeout(() => {
+      if (c.sel) { this._scrollTo(c.sel); if (c.focusInput) setTimeout(() => { const el = document.querySelector('#claim input'); if (el) el.focus(); }, 650); }
+      else if (c.action === 'cart') this.openCart();
+      else if (c.action === 'surv') this._triggerSurv();
+      else if (c.action === 'ig') window.open('https://www.instagram.com/tosurviver', '_blank');
+    }, 30);
+  }
+  _scrollTo(sel) { const el = document.querySelector(sel); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 8; window.scrollTo({ top: y, behavior: 'smooth' }); } }
+
+  _initSpotlight() {
+    const band = document.getElementById('reveal-band'), spot = document.getElementById('tos-spot'), glow = document.getElementById('tos-spotglow');
+    if (!band || !spot || this._spotDone) return; this._spotDone = true;
+    let hover = false;
+    const set = (x, y) => { spot.style.setProperty('--mx', x + 'px'); spot.style.setProperty('--my', y + 'px'); if (glow) glow.style.background = 'radial-gradient(circle 200px at ' + x + 'px ' + y + 'px, rgba(225,168,92,.16), transparent 72%)'; };
+    band.addEventListener('mousemove', (e) => { const r = band.getBoundingClientRect(); hover = true; set(e.clientX - r.left, e.clientY - r.top); });
+    band.addEventListener('mouseleave', () => { hover = false; });
+    band.addEventListener('touchmove', (e) => { const t = e.touches[0]; const r = band.getBoundingClientRect(); hover = true; set(t.clientX - r.left, t.clientY - r.top); }, { passive: true });
+    const loop = (now) => {
+      if (!hover) { const r = band.getBoundingClientRect(), a = now * 0.0008; set(r.width / 2 + Math.cos(a) * r.width * 0.28, r.height / 2 + Math.sin(a * 1.3) * r.height * 0.3); }
+      this._spotRaf = requestAnimationFrame(loop);
+    };
+    loop(performance.now());
+  }
+
+  STATS = [52, 16, 80, null];
+  toggleCreed(i) { this.setState(s => ({ creedOpen: s.creedOpen === i ? null : i })); }
+
+  componentDidUpdate() {
+    // prevState is unreliable in this runtime — track the active panel on the instance
+    if (this._fxActive === this.state.creedOpen) return;
+    this._fxActive = this.state.creedOpen;
+    cancelAnimationFrame(this._fxRaf); this._fxRaf = null;
+    const i = this.state.creedOpen;
+    if (i == null) return;
+    const cv = document.getElementById('tos-fx-' + i); // DOM already committed here
+    if (!cv) return;
+    const fx = [this._fxFire, this._fxMoney, this._fxFlock, this._fxLead][i];
+    if (fx) fx.call(this, cv);
+    this._animateStat(i);
+  }
+
+  _fxSize(cv, ctx) {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const W = cv.clientWidth, H = cv.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return [W, H];
+  }
+
+  _animateStat(i) {
+    const s = this.STATS[i]; if (s == null) return;
+    const el = document.getElementById('tos-stat-' + i); if (!el) return;
+    const start = performance.now(), dur = 1200;
+    const step = (now) => { const k = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(e * s); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  _fxFire(cv) {
+    const ctx = cv.getContext('2d'); let W, H; [W, H] = this._fxSize(cv, ctx);
+    const cols = ['#FCE9A8', '#F2A93B', '#E0631F', '#C1442E', '#8a1f12'];
+    const ps = [];
+    const loop = (now) => {
+      if (!W && cv.clientWidth) [W, H] = this._fxSize(cv, ctx);
+      ctx.clearRect(0, 0, W, H);
+      const g = ctx.createLinearGradient(0, H, 0, H * 0.35);
+      g.addColorStop(0, 'rgba(225,99,31,.42)'); g.addColorStop(1, 'rgba(225,99,31,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, H * 0.35, W, H * 0.65);
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 7; i++) ps.push({ x: Math.random() * W, y: H + 8, vx: (Math.random() - 0.5) * 0.6, vy: -(1.1 + Math.random() * 2.4), life: 0, max: 0.6 + Math.random() * 0.9, size: 7 + Math.random() * 22, c: cols[(Math.random() * cols.length) | 0] });
+      for (let i = ps.length - 1; i >= 0; i--) {
+        const p = ps[i]; p.life += 0.016; if (p.life >= p.max) { ps.splice(i, 1); continue; }
+        p.x += p.vx; p.y += p.vy; p.vy *= 0.99; p.vx += (Math.random() - 0.5) * 0.3;
+        const k = 1 - p.life / p.max, s = p.size * (0.4 + (1 - k) * 1.1);
+        ctx.globalAlpha = k * 0.5; ctx.drawImage(this._glow(p.c), p.x - s, p.y - s, s * 2, s * 2);
+      }
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+      this._fxRaf = requestAnimationFrame(loop);
+    };
+    loop(performance.now()); // synchronous first paint, then self-schedules
+  }
+
+  _fxMoney(cv) {
+    const ctx = cv.getContext('2d'); let W, H; [W, H] = this._fxSize(cv, ctx);
+    const make = () => ({ x: Math.random() * W, y: -30 - Math.random() * H, vy: 1 + Math.random() * 2.2, rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.06, sway: Math.random() * Math.PI * 2, w: 32 + Math.random() * 18 });
+    const bills = []; for (let i = 0; i < 36; i++) bills.push(make());
+    const loop = () => {
+      if (!W && cv.clientWidth) { [W, H] = this._fxSize(cv, ctx); }
+      ctx.clearRect(0, 0, W, H);
+      for (const b of bills) {
+        b.y += b.vy; b.sway += 0.03; b.rot += b.vr;
+        if (b.y > H + 30) { Object.assign(b, make()); b.y = -30; }
+        const x = b.x + Math.sin(b.sway) * 14, w = b.w, h = w * 0.45;
+        ctx.save(); ctx.translate(x, b.y); ctx.rotate(b.rot);
+        ctx.fillStyle = '#2f5d3a'; ctx.strokeStyle = '#9fcf9f'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.rect(-w / 2, -h / 2, w, h); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#cfe9cf'; ctx.beginPath(); ctx.arc(0, 0, h * 0.3, 0, 7); ctx.fill();
+        ctx.fillStyle = '#2f5d3a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = 'bold ' + Math.round(h * 0.42) + 'px Archivo, sans-serif'; ctx.fillText('$', 0, 1);
+        ctx.fillStyle = '#cfe9cf'; ctx.font = 'bold ' + Math.round(h * 0.2) + 'px Archivo, sans-serif';
+        ctx.fillText('100', -w * 0.3, -h * 0.28); ctx.fillText('100', w * 0.3, h * 0.28);
+        ctx.restore();
+      }
+      this._fxRaf = requestAnimationFrame(loop);
+    };
+    loop(performance.now()); // synchronous first paint, then self-schedules
+  }
+
+  _fxFlock(cv) {
+    const ctx = cv.getContext('2d'); let W, H; [W, H] = this._fxSize(cv, ctx);
+    const birds = []; for (let i = 0; i < 46; i++) birds.push({ x: Math.random() * W, y: 20 + Math.random() * (H - 40), ph: Math.random() * 6, sp: 0.5 + Math.random() * 0.9, amp: 5 + Math.random() * 9 });
+    let rt = 0;
+    const bird = (x, y, s, col, dir) => { ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x - s, y); ctx.lineTo(x, y - s * 0.6 * dir); ctx.lineTo(x + s, y); ctx.stroke(); };
+    const loop = (now) => {
+      if (!W && cv.clientWidth) { [W, H] = this._fxSize(cv, ctx); }
+      ctx.clearRect(0, 0, W, H);
+      const t = now * 0.001;
+      for (const b of birds) { b.x += b.sp; if (b.x > W + 12) b.x = -12; const y = b.y + Math.sin(t * 2 + b.ph) * b.amp * 0.4; const fl = Math.sin(t * 9 + b.ph) > 0 ? 1 : -1; ctx.globalAlpha = 0.5; bird(b.x, y, 5, '#6b6358', fl); }
+      rt += 0.016; const rx = W * 0.18 + rt * 78, ry = H * 0.72 - rt * 64; const fl = Math.sin(now * 0.02) > 0 ? 1 : -1;
+      ctx.globalAlpha = 1; bird(rx, ry, 8.5, '#C1442E', fl);
+      if (rx > W + 24 || ry < -24) rt = 0;
+      ctx.globalAlpha = 1;
+      this._fxRaf = requestAnimationFrame(loop);
+    };
+    loop(performance.now()); // synchronous first paint, then self-schedules
+  }
+
+  _fxLead(cv) {
+    const ctx = cv.getContext('2d'); let W, H; [W, H] = this._fxSize(cv, ctx);
+    const F = 7; let t = 0;
+    const loop = (now) => {
+      if (!W && cv.clientWidth) { [W, H] = this._fxSize(cv, ctx); }
+      ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter';
+      t += 0.016; const X = W / 2, Y = H / 2, rad = Math.min(W, H) * 0.32;
+      const pulse = 0.5 + 0.5 * Math.sin(t * 3), cs = 18 + pulse * 24;
+      ctx.globalAlpha = 0.9; ctx.drawImage(this._glow('#F2D9A0'), X - cs, Y - cs, cs * 2, cs * 2);
+      ctx.globalAlpha = 1; ctx.drawImage(this._glow('#ffffff'), X - 8, Y - 8, 16, 16);
+      const ring = (t % 3) / 3; ctx.globalAlpha = (1 - ring) * 0.45; ctx.strokeStyle = '#E0A85C'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(X, Y, ring * Math.min(W, H) * 0.5, 0, 7); ctx.stroke();
+      for (let i = 0; i < F; i++) { const a = (i / F) * Math.PI * 2 + t * 0.2, fx = X + Math.cos(a) * rad, fy = Y + Math.sin(a) * rad; const lit = Math.max(0, Math.sin(t * 2 - i * 0.5)); ctx.globalAlpha = 0.25 + lit * 0.7; const fs = 5 + lit * 11; ctx.drawImage(this._glow(i % 2 ? '#73D6C2' : '#C1442E'), fx - fs, fy - fs, fs * 2, fs * 2); }
+      ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+      this._fxRaf = requestAnimationFrame(loop);
+    };
+    loop(performance.now()); // synchronous first paint, then self-schedules
+  }
+
+  PRODUCTS = {
+    moon: { code: 'TOS–001', name: 'Ladder to the Moon', price: 2400, img: 'images/p-moon.png', look: 'images/look-moon.png', bg: '#0E0C09', desc: 'Midnight-dyed heavyweight hoodie. The Ladder to the Moon graphic — hand-drawn, glitter-grained — for the ones who keep climbing when everyone says stop.' },
+    reality: { code: 'TOS–002', name: 'Questioned Reality', price: 1100, img: 'images/p-reality.png', look: 'images/look-tink.png', bg: '#EDE8DF', desc: 'Garment-dyed bone tee. Questioned Reality — because the flock never asked why. You always did.' },
+    redeemer: { code: 'TOS–003', name: 'Redeemer Tee', price: 1100, img: 'images/p-christ.png', look: 'images/look-curly.png', bg: '#EDE8DF', desc: 'The Redeemer sun burned into raw cotton. Salvation is self-issued — no masters, no permission.' },
+    sheep: { code: 'TOS–004', name: 'Not For The Sheep', price: 2950, img: 'images/p-zip.png', look: 'images/ed-ducks.jpeg', bg: '#EDE8DF', desc: 'Full-zip armor in washed heavyweight. Not For The Sheep — a uniform for those who lead instead of follow.' }
+  };
+  LOOKS = [
+    { img: 'images/look-moon.png', label: 'Ladder to the Moon', sub: 'Drop 001 · Outerwear' },
+    { img: 'images/look-tink.png', label: 'Pixie Dust', sub: 'Drop 001 · Tees' },
+    { img: 'images/ed-balaclava.jpeg', label: 'Galaxy Balaclava', sub: 'Drop 001 · Headwear' },
+    { img: 'images/ed-ducks.jpeg', label: 'No Flock', sub: 'Drop 001 · Knitwear' },
+    { img: 'images/look-vest.png', label: 'Patchwork Vest', sub: 'Drop 001 · Layers' },
+    { img: 'images/look-curly.png', label: 'Redeemer Set', sub: 'Drop 001 · Full Look' }
+  ];
+  openProduct(key) { this.setState({ modalKey: key, modalSize: 'M', cartOpen: false }); }
+  closeModal() { this.setState({ modalKey: null }); }
+  setSize(s) { this.setState({ modalSize: s }); }
+  addToCart() {
+    const key = this.state.modalKey, p = this.PRODUCTS[key]; if (!p) return;
+    const size = this.state.modalSize, cart = this.state.cart.slice();
+    const i = cart.findIndex(it => it.key === key && it.size === size);
+    if (i >= 0) cart[i] = { ...cart[i], qty: cart[i].qty + 1 };
+    else cart.push({ key, size, qty: 1, name: p.name, price: p.price, img: p.img, code: p.code });
+    this.setState({ cart, modalKey: null, cartOpen: true });
+  }
+  navJump(id) { this.setState({ menuOpen: false }); setTimeout(() => this._scrollTo('#' + id), 30); }
+  toggleMenu() { this.setState(s => ({ menuOpen: !s.menuOpen })); }
+  openCart() { this.setState({ cartOpen: true }); }
+  closeCart() { this.setState({ cartOpen: false, cartNote: false }); }
+  removeItem(idx) { const cart = this.state.cart.slice(); cart.splice(idx, 1); this.setState({ cart }); }
+  setPanel(i) { this.setState({ activePanel: i }); }
+  openLook(i) {
+    if (this.state.activePanel !== i) { this.setState({ activePanel: i }); }
+    else { const L = this.LOOKS[i]; this.setState({ lightbox: { img: L.img, label: L.label, sub: L.sub } }); }
+  }
+  openLightbox(img, label, sub) { this.setState({ lightbox: { img, label, sub } }); }
+  closeLightbox() { this.setState({ lightbox: null }); }
+
+  componentDidMount() {
+    this._initSparkle();
+    this._initCursorTrail();
+    this._initLoaderParticles();
+
+    // Loader counter (drives particle convergence via this._progress)
+    const start = performance.now();
+    const dur = 2900;
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = t < 1 ? 1 - Math.pow(1 - t, 3) : 1;
+      this._progress = eased;
+      const c = Math.round(eased * 100);
+      this.setState({ count: c });
+      if (t < 1) { this._raf = requestAnimationFrame(tick); }
+      else {
+        this._burst = true; this._burstAt = performance.now();
+        setTimeout(() => this.setState({ loaded: true }, () => this._initReveal()), 520);
+      }
+    };
+    this._raf = requestAnimationFrame(tick);
+    setTimeout(() => this._initReveal(), 3600);
+
+    // ESC closes topmost overlay
+    this._onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      if (this.state.lightbox) this.setState({ lightbox: null });
+      else if (this.state.modalKey) this.setState({ modalKey: null });
+      else if (this.state.cartOpen) this.setState({ cartOpen: false });
+    };
+    window.addEventListener('keydown', this._onKey);
+
+    // Custom cursor
+    const cur = this.cursorRef;
+    if (cur) {
+      let cx = window.innerWidth / 2, cy = window.innerHeight / 2, tx = cx, ty = cy;
+      const move = (e) => { tx = e.clientX; ty = e.clientY; };
+      window.addEventListener('mousemove', move);
+      const loop = () => {
+        cx += (tx - cx) * 0.2; cy += (ty - cy) * 0.2;
+        cur.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
+        this._curRaf = requestAnimationFrame(loop);
+      };
+      loop();
+      this._hoverIn = () => { cur.style.width = '54px'; cur.style.height = '54px'; cur.style.background = '#EDE8DF'; };
+      this._hoverOut = () => { cur.style.width = '14px'; cur.style.height = '14px'; cur.style.background = 'transparent'; };
+      this._bindHovers = () => {
+        document.querySelectorAll('[data-cursor]').forEach(el => {
+          el.addEventListener('mouseenter', this._hoverIn);
+          el.addEventListener('mouseleave', this._hoverOut);
+        });
+      };
+      this._bindHovers();
+    }
+
+    setTimeout(() => { this._init3D(); this._initTilt(); this._initMagnet(); this._initGlobe(); this._initIdCard(); this._initSpotlight(); }, 80);
+
+    // Command palette: ⌘K / Ctrl+K / "/"
+    this._onCmdKey = (e) => {
+      const typing = /^(input|textarea)$/i.test((e.target && e.target.tagName) || '');
+      if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (this.state.cmdOpen) this.setState({ cmdOpen: false }); else this._openCmd(); return; }
+      if (e.key === '/' && !typing && !this.state.cmdOpen) { e.preventDefault(); this._openCmd(); return; }
+      if (this.state.cmdOpen) {
+        if (e.key === 'Escape') this.setState({ cmdOpen: false });
+        else if (e.key === 'ArrowDown') { e.preventDefault(); this._moveCmd(1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); this._moveCmd(-1); }
+        else if (e.key === 'Enter') { e.preventDefault(); this._runCurrentCmd(); }
+      }
+    };
+    window.addEventListener('keydown', this._onCmdKey);
+
+    // Scroll-velocity skew on [data-skew] elements
+    let lastY = window.scrollY, lastT = performance.now(), sv = 0;
+    this._onScrollSkew = () => { const y = window.scrollY, t = performance.now(), dt = Math.max(16, t - lastT); sv = (y - lastY) / dt; lastY = y; lastT = t; };
+    window.addEventListener('scroll', this._onScrollSkew, { passive: true });
+    const skewLoop = () => { const sk = Math.max(-9, Math.min(9, sv * 4.5)); const els = document.querySelectorAll('[data-skew]'); els.forEach(el => { el.style.transform = 'skewX(' + sk.toFixed(2) + 'deg)'; }); sv *= 0.9; this._skewRaf = requestAnimationFrame(skewLoop); };
+    skewLoop();
+
+    // Scroll progress + scroll-spy active section
+    const SECS = ['top', 'showroom', 'drop', 'creed', 'lookbook', 'claim', 'contact'];
+    this._onScrollUx = () => {
+      const doc = document.documentElement, sh = doc.scrollHeight - doc.clientHeight;
+      const pct = sh > 0 ? (window.scrollY / sh) * 100 : 0;
+      const mid = window.scrollY + window.innerHeight * 0.4;
+      let act = SECS[0];
+      for (const id of SECS) { const el = document.getElementById(id); if (el && el.offsetTop <= mid) act = id; }
+      if (Math.abs(pct - this.state.scrollPct) > 0.4 || act !== this.state.activeSec) this.setState({ scrollPct: pct, activeSec: act });
+    };
+    window.addEventListener('scroll', this._onScrollUx, { passive: true });
+    this._onScrollUx();
+
+    // Secret word: type SURVIVE anywhere
+    let buf = '';
+    this._onSurvKey = (e) => { if (e.key && e.key.length === 1) { buf = (buf + e.key.toLowerCase()).slice(-7); if (buf.indexOf('survive') >= 0) { buf = ''; this._triggerSurv(); } } };
+    window.addEventListener('keydown', this._onSurvKey);
+
+    // Idle "void" mode
+    this._lastAct = performance.now();
+    this._resetIdle = () => { this._lastAct = performance.now(); if (this.state.idle) this.setState({ idle: false }); };
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'wheel'].forEach(ev => window.addEventListener(ev, this._resetIdle, { passive: true }));
+    this._idleInt = setInterval(() => {
+      if (performance.now() - this._lastAct > 14000 && !this.state.idle && !this.state.modalKey && !this.state.cartOpen && !this.state.lightbox && this.state.loaded) this.setState({ idle: true });
+    }, 1000);
+
+    // Dual-city live clocks
+    const fmt = (tz) => { try { return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: tz }).format(new Date()); } catch (e) { return '--:--:--'; } };
+    const tickClock = () => {
+      const a = document.getElementById('tos-time-tlv'); const b = document.getElementById('tos-time-mia');
+      if (a) a.textContent = fmt('Asia/Jerusalem'); if (b) b.textContent = fmt('America/New_York');
+    };
+    tickClock(); this._clock = setInterval(tickClock, 1000);
+  }
+
+  _initGlobe() {
+    const cv = document.getElementById('tos-globe');
+    if (!cv || this._globeDone) return;
+    this._globeDone = true;
+    const ctx = cv.getContext('2d');
+    let W = 0, H = 0, dpr, R, cx, cy;
+    const resize = () => {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      const w = cv.clientWidth, h = cv.clientHeight;
+      if (!w || !h) return; // layout not ready
+      W = w; H = h;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      R = Math.min(W, H) * 0.37; cx = W / 2; cy = H / 2;
+    };
+    const repaint = () => { resize(); if (this._globeFrame) { cancelAnimationFrame(this._globeRaf); this._globeFrame(performance.now()); } };
+    window.addEventListener('resize', repaint);
+    if (window.ResizeObserver) { this._globeRO = new ResizeObserver(repaint); this._globeRO.observe(cv); }
+    const D2R = Math.PI / 180, tilt = -20 * D2R;
+    const dots = [];
+    for (let la = -78; la <= 78; la += 12) {
+      const r = Math.cos(la * D2R), count = Math.max(6, Math.round(26 * r));
+      for (let k = 0; k < count; k++) dots.push([la * D2R, (-180 + k * (360 / count)) * D2R]);
+    }
+    const toVec = ([la, lo]) => [Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)];
+    const TLV = toVec([32.08 * D2R, 34.78 * D2R]), MIA = toVec([25.76 * D2R, -80.19 * D2R]);
+    const dotp = TLV[0] * MIA[0] + TLV[1] * MIA[1] + TLV[2] * MIA[2];
+    const OM = Math.acos(Math.max(-1, Math.min(1, dotp)));
+    const arc = []; const N = 64;
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, s1 = Math.sin((1 - t) * OM) / Math.sin(OM), s2 = Math.sin(t * OM) / Math.sin(OM);
+      const lift = 1 + 0.17 * Math.sin(t * Math.PI);
+      arc.push([(TLV[0] * s1 + MIA[0] * s2) * lift, (TLV[1] * s1 + MIA[1] * s2) * lift, (TLV[2] * s1 + MIA[2] * s2) * lift]);
+    }
+    let rot = 0.4, vel = 0.0026, dragging = false, lastX = 0;
+    const rotate = (v) => {
+      const cR = Math.cos(rot), sR = Math.sin(rot);
+      const x1 = v[0] * cR + v[2] * sR, z1 = -v[0] * sR + v[2] * cR, y1 = v[1];
+      const cT = Math.cos(tilt), sT = Math.sin(tilt);
+      return [x1, y1 * cT - z1 * sT, y1 * sT + z1 * cT];
+    };
+    const proj = (v) => { const r = rotate(v); return [cx + r[0] * R, cy - r[1] * R, r[2]]; };
+    const frame = (now) => {
+      if (!W && cv.clientWidth && cv.clientHeight) resize(); // self-heal a 0-size buffer
+      ctx.clearRect(0, 0, W, H);
+      if (!W) { this._globeRaf = requestAnimationFrame(frame); return; }
+      if (!dragging) { vel += (0.0026 - vel) * 0.02; rot += vel; }
+      // globe body
+      const bg = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.3, R * 0.2, cx, cy, R);
+      bg.addColorStop(0, 'rgba(28,52,74,.55)'); bg.addColorStop(1, 'rgba(10,16,24,.15)');
+      ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill();
+      // dots
+      for (const d of dots) {
+        const p = proj(toVec(d)), a = (p[2] + 1) / 2;
+        ctx.globalAlpha = 0.08 + a * 0.5;
+        ctx.fillStyle = p[2] > 0 ? '#bcd4ee' : '#46617e';
+        const s = 0.5 + a * 1.5;
+        ctx.fillRect(p[0] - s / 2, p[1] - s / 2, s, s);
+      }
+      // arc (front segments)
+      ctx.globalAlpha = 1; ctx.lineWidth = 1.6; ctx.strokeStyle = '#E0A85C';
+      ctx.shadowColor = '#E0A85C'; ctx.shadowBlur = 8;
+      ctx.beginPath(); let pen = false;
+      for (const v of arc) { const p = proj(v); if (p[2] > -0.1) { if (!pen) { ctx.moveTo(p[0], p[1]); pen = true; } else ctx.lineTo(p[0], p[1]); } else pen = false; }
+      ctx.stroke(); ctx.shadowBlur = 0;
+      // traveling signal
+      const tt = (now * 0.00018) % 1, sp = proj(arc[Math.floor(tt * N)]);
+      if (sp[2] > -0.1) { ctx.globalAlpha = 1; ctx.fillStyle = '#F2D9A0'; ctx.shadowColor = '#F2D9A0'; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(sp[0], sp[1], 2.6, 0, 7); ctx.fill(); ctx.shadowBlur = 0; }
+      // markers
+      const pulse = 0.5 + 0.5 * Math.sin(now * 0.004);
+      const mk = (vec, color, label) => {
+        const p = proj(vec); if (p[2] <= 0) return;
+        ctx.globalAlpha = 0.3 * pulse; ctx.fillStyle = color; ctx.beginPath(); ctx.arc(p[0], p[1], 3 + pulse * 9, 0, 7); ctx.fill();
+        ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(p[0], p[1], 3.2, 0, 7); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = '700 10px Archivo, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(label, p[0], p[1] - 12);
+      };
+      mk(TLV, '#8FC2F0', 'TLV'); mk(MIA, '#73D6C2', 'MIA');
+      ctx.globalAlpha = 1;
+      this._globeRaf = requestAnimationFrame(frame);
+    };
+    this._globeFrame = frame;
+    repaint();                 // size + first paint (or wait for ResizeObserver if layout not ready)
+    frame(performance.now());  // start the loop
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) repaint(); });
+    const down = (x) => { dragging = true; lastX = x; vel = 0; cv.style.cursor = 'grabbing'; };
+    const move = (x) => { if (!dragging) return; const dx = x - lastX; lastX = x; rot += dx * 0.006; vel = dx * 0.006; };
+    const up = () => { dragging = false; cv.style.cursor = 'grab'; };
+    cv.addEventListener('mousedown', (e) => { e.preventDefault(); down(e.clientX); });
+    window.addEventListener('mousemove', (e) => move(e.clientX));
+    window.addEventListener('mouseup', up);
+    cv.addEventListener('touchstart', (e) => down(e.touches[0].clientX), { passive: true });
+    cv.addEventListener('touchmove', (e) => move(e.touches[0].clientX), { passive: true });
+    cv.addEventListener('touchend', up);
+  }
+
+  // Cached soft-glow sprite per color — anti-aliased, scales without pixelation
+  _glow(color) {
+    this._glowCache = this._glowCache || {};
+    if (this._glowCache[color]) return this._glowCache[color];
+    const S = 96, c = document.createElement('canvas');
+    c.width = S; c.height = S;
+    const g = c.getContext('2d');
+    const grd = g.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+    grd.addColorStop(0, 'rgba(255,255,255,0.95)');
+    grd.addColorStop(0.18, color);
+    grd.addColorStop(0.5, this._rgba(color, 0.35));
+    grd.addColorStop(1, this._rgba(color, 0));
+    g.fillStyle = grd;
+    g.fillRect(0, 0, S, S);
+    this._glowCache[color] = c;
+    return c;
+  }
+  _rgba(hex, a) {
+    const h = hex.replace('#', '');
+    const r = parseInt(h.substring(0, 2), 16), gg = parseInt(h.substring(2, 4), 16), b = parseInt(h.substring(4, 6), 16);
+    return 'rgba(' + r + ',' + gg + ',' + b + ',' + a + ')';
+  }
+  // 4-point star sparkle sprite
+  _star(color) {
+    this._starCache = this._starCache || {};
+    if (this._starCache[color]) return this._starCache[color];
+    const S = 128, c = document.createElement('canvas');
+    c.width = S; c.height = S;
+    const g = c.getContext('2d');
+    g.translate(S / 2, S / 2);
+    const spokes = (len, w) => {
+      const grd = g.createLinearGradient(-len, 0, len, 0);
+      grd.addColorStop(0, this._rgba(color, 0));
+      grd.addColorStop(0.5, '#fff');
+      grd.addColorStop(1, this._rgba(color, 0));
+      g.fillStyle = grd;
+      g.fillRect(-len, -w / 2, len * 2, w);
+    };
+    spokes(S / 2, 2.4);
+    g.rotate(Math.PI / 2); spokes(S / 2, 2.4);
+    this._starCache[color] = c;
+    return c;
+  }
+
+  _initCursorTrail() {
+    const cv = document.getElementById('tos-cursor-trail');
+    if (!cv || this._ctDone) return;
+    this._ctDone = true;
+    const ctx = cv.getContext('2d');
+    let W, H, dpr;
+    const resize = () => {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = cv.clientWidth; H = cv.clientHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) resize(); });
+    const cols = ['#EDE8DF', '#F2D9A0', '#E0A85C', '#C1442E', '#8FC2F0', '#C98BD9', '#73D6C2'];
+    const ps = [];
+    let lx = null, ly = null;
+    const spawn = (x, y, n, spread, speed, up) => {
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2, sp = Math.random() * speed;
+        ps.push({
+          x: x + (Math.random() - 0.5) * spread, y: y + (Math.random() - 0.5) * spread,
+          vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - (up || 0),
+          life: 0, max: 0.55 + Math.random() * 0.8,
+          size: 0.9 + Math.random() * 2.3, c: cols[(Math.random() * cols.length) | 0],
+          star: Math.random() < 0.22
+        });
+      }
+      if (ps.length > 260) ps.splice(0, ps.length - 260);
+    };
+    window.addEventListener('mousemove', (e) => {
+      const x = e.clientX, y = e.clientY;
+      if (lx == null) { lx = x; ly = y; }
+      if (Math.hypot(x - lx, y - ly) > 6) { spawn(x, y, 1, 4, 0.7, 0.2); lx = x; ly = y; }
+    });
+    window.addEventListener('mousedown', (e) => spawn(e.clientX, e.clientY, 20, 5, 3.6, 0.6));
+    this._ctBurst = () => { for (let i = 0; i < 140; i++) spawn(Math.random() * W, Math.random() * H, 1, 0, 4.4, 2.2); };
+    window.addEventListener('touchmove', (e) => { const t = e.touches[0]; if (t) spawn(t.clientX, t.clientY, 1, 4, 0.7, 0.2); }, { passive: true });
+    window.addEventListener('touchstart', (e) => { const t = e.touches[0]; if (t) spawn(t.clientX, t.clientY, 16, 5, 3.2, 0.6); }, { passive: true });
+    const loop = (now) => {
+      if (!W && cv.clientWidth && cv.clientHeight) resize(); // self-heal a 0-size buffer
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = ps.length - 1; i >= 0; i--) {
+        const p = ps[i];
+        p.life += 0.016;
+        if (p.life >= p.max) { ps.splice(i, 1); continue; }
+        p.vy += 0.05; p.vx *= 0.97; p.vy *= 0.97; p.x += p.vx; p.y += p.vy;
+        const k = 1 - p.life / p.max, tw = 0.6 + 0.4 * Math.sin(now * 0.018 + p.x);
+        ctx.globalAlpha = k * tw;
+        const sz = p.size * 3.2;
+        ctx.drawImage(this._glow(p.c), p.x - sz, p.y - sz, sz * 2, sz * 2);
+        if (p.star && k > 0.35) {
+          ctx.globalAlpha = k * 0.9;
+          const ss = p.size * 4.4;
+          ctx.drawImage(this._star(p.c), p.x - ss, p.y - ss, ss * 2, ss * 2);
+        }
+      }
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+      this._ctRaf = requestAnimationFrame(loop);
+    };
+    this._ctRaf = requestAnimationFrame(loop);
+  }
+
+  _initSparkle() {
+    const cv = document.getElementById('tos-sparkle');
+    if (!cv || this._sparkDone) return;
+    this._sparkDone = true;
+    const ctx = cv.getContext('2d');
+    let W, H, dpr, dots = [];
+    // cream / gold / amber / rust + cosmic blue / lilac / teal — pulled from the artworks
+    const cols = ['#EDE8DF', '#F2D9A0', '#E0A85C', '#C1442E', '#8FC2F0', '#C98BD9', '#73D6C2'];
+    const resize = () => {
+      dpr = Math.min(3, window.devicePixelRatio || 1);
+      W = cv.clientWidth; H = cv.clientHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.round((W * H) / 7600);
+      dots = [];
+      for (let i = 0; i < n; i++) {
+        const big = Math.random() < 0.07;
+        dots.push({
+          x: Math.random() * W, y: Math.random() * H,
+          r: big ? (2.6 + Math.random() * 2.4) : (0.7 + Math.random() * 1.4),
+          c: cols[(Math.random() * cols.length) | 0],
+          ph: Math.random() * Math.PI * 2, sp: 0.4 + Math.random() * 1.9,
+          star: big
+        });
+      }
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    const loop = (now) => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      const t = now * 0.001;
+      for (const d of dots) {
+        const tw = 0.5 + 0.5 * Math.sin(t * d.sp + d.ph);
+        const a = tw * tw;
+        if (a < 0.04) continue;
+        ctx.globalAlpha = a * 0.9;
+        const r = d.r * (0.65 + tw * 0.7), sz = r * 3.4;
+        ctx.drawImage(this._glow(d.c), d.x - sz, d.y - sz, sz * 2, sz * 2);
+        if (d.star && tw > 0.6) {
+          ctx.globalAlpha = (tw - 0.6) * 2.2;
+          const ss = r * 6;
+          ctx.drawImage(this._star(d.c), d.x - ss, d.y - ss, ss * 2, ss * 2);
+        }
+      }
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      this._sparkRaf = requestAnimationFrame(loop);
+    };
+    this._sparkRaf = requestAnimationFrame(loop);
+  }
+
+  _initLoaderParticles() {
+    const cv = document.getElementById('tos-loader-canvas');
+    if (!cv || this._lpDone) return;
+    this._lpDone = true;
+    const ctx = cv.getContext('2d');
+    let W, H, dpr;
+    const resize = () => {
+      dpr = Math.min(3, window.devicePixelRatio || 1);
+      W = cv.clientWidth; H = cv.clientHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    // cream-heavy core with gold/amber/rust + cosmic accents
+    const cols = ['#EDE8DF', '#EDE8DF', '#F5EFE3', '#F2D9A0', '#E0A85C', '#C1442E', '#8FC2F0', '#C98BD9'];
+    let particles = [];
+
+    const build = () => {
+      // hi-res offscreen for crisp letter edges → dense sampling
+      const off = document.createElement('canvas');
+      const ow = 1800, oh = 640; off.width = ow; off.height = oh;
+      const o = off.getContext('2d');
+      o.fillStyle = '#fff'; o.textAlign = 'center'; o.textBaseline = 'middle';
+      o.font = '700 540px Anton, sans-serif';
+      o.fillText('TOS', ow / 2, oh / 2 + 14);
+      const data = o.getImageData(0, 0, ow, oh).data;
+      const pts = [], step = 6;
+      for (let y = 0; y < oh; y += step)
+        for (let x = 0; x < ow; x += step)
+          if (data[(y * ow + x) * 4 + 3] > 128) pts.push([x, y]);
+      const scale = Math.min(W * 0.62 / ow, H * 0.42 / oh);
+      const dw = ow * scale, dh = oh * scale, ox = (W - dw) / 2, oy = (H - dh) / 2;
+      particles = pts.map(([px, py]) => {
+        const hx = ox + px * scale, hy = oy + py * scale;
+        const ang = Math.random() * Math.PI * 2, rad = Math.max(W, H) * (0.4 + Math.random() * 0.7);
+        const big = Math.random() < 0.1;
+        return {
+          hx, hy, x: W / 2 + Math.cos(ang) * rad, y: H / 2 + Math.sin(ang) * rad,
+          c: cols[(Math.random() * cols.length) | 0],
+          s: big ? 2.6 : 1.5,
+          glint: Math.random() < 0.09, ph: Math.random() * Math.PI * 2, vx: 0, vy: 0
+        };
+      });
+    };
+
+    const startDraw = () => {
+      build();
+      const draw = (now) => {
+        ctx.clearRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'lighter';
+        const p = this._progress || 0, t = now * 0.001;
+        if (this._burst) {
+          const bt = Math.min(1, (now - this._burstAt) / 900);
+          for (const q of particles) {
+            if (!q._bset) {
+              const a = Math.atan2(q.hy - H / 2, q.hx - W / 2), v = 6 + Math.random() * 11;
+              q.vx = Math.cos(a) * v; q.vy = Math.sin(a) * v - 2; q._bset = true;
+            }
+            q.hx += q.vx; q.hy += q.vy; q.vy += 0.25;
+            ctx.globalAlpha = Math.max(0, 1 - bt);
+            const sz = q.s * 3.2;
+            ctx.drawImage(this._glow(q.c), q.hx - sz, q.hy - sz, sz * 2, sz * 2);
+          }
+          ctx.globalAlpha = 1;
+          ctx.globalCompositeOperation = 'source-over';
+          this._lpRaf = requestAnimationFrame(draw); return;
+        }
+        const ease = p < 1 ? 1 - Math.pow(1 - p, 3) : 1;
+        for (const q of particles) {
+          q.x += (q.hx - q.x) * (0.04 + ease * 0.12);
+          q.y += (q.hy - q.y) * (0.04 + ease * 0.12);
+          const jit = (1 - ease) * 2.4;
+          const tw = 0.62 + 0.38 * Math.sin(t * 2 + q.ph);
+          ctx.globalAlpha = (0.42 + ease * 0.58) * tw;
+          const jx = q.x + (Math.random() - 0.5) * jit, jy = q.y + (Math.random() - 0.5) * jit;
+          const sz = q.s * (2.7 + tw * 0.8);
+          ctx.drawImage(this._glow(q.c), jx - sz, jy - sz, sz * 2, sz * 2);
+          if (q.glint && ease > 0.65) {
+            ctx.globalAlpha = tw * ease;
+            const ss = q.s * 5.5;
+            ctx.drawImage(this._star(q.c), jx - ss, jy - ss, ss * 2, ss * 2);
+          }
+        }
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+        this._lpRaf = requestAnimationFrame(draw);
+      };
+      this._lpRaf = requestAnimationFrame(draw);
+    };
+
+    if (document.fonts && document.fonts.load) {
+      Promise.race([
+        document.fonts.load('700 540px Anton'),
+        new Promise(r => setTimeout(r, 700))
+      ]).then(startDraw).catch(startDraw);
+    } else setTimeout(startDraw, 300);
+  }
+
+  _init3D() {
+    const wrap = document.getElementById('tos-3d-wrap');
+    const stage = document.getElementById('tos-3d-stage');
+    if (!wrap || !stage || this._d3done) return;
+    this._d3done = true;
+    let rot = -18, vel = 0.14, dragging = false, lastX = 0, tiltX = 0, tiltXt = 0;
+    const idle = 0.14;
+    const frame = () => {
+      if (!dragging) { vel += (idle - vel) * 0.02; rot += vel; }
+      tiltX += (tiltXt - tiltX) * 0.08;
+      stage.style.transform = `rotateX(${tiltX}deg) rotateY(${rot}deg)`;
+      this._d3raf = requestAnimationFrame(frame);
+    };
+    frame();
+    const down = (x) => { dragging = true; lastX = x; vel = 0; wrap.style.cursor = 'grabbing'; };
+    const moveH = (x) => { if (!dragging) return; const dx = x - lastX; lastX = x; rot += dx * 0.45; vel = dx * 0.45; };
+    const up = () => { dragging = false; wrap.style.cursor = 'grab'; };
+    wrap.addEventListener('mousedown', (e) => { e.preventDefault(); down(e.clientX); });
+    window.addEventListener('mousemove', (e) => moveH(e.clientX));
+    window.addEventListener('mouseup', up);
+    wrap.addEventListener('touchstart', (e) => down(e.touches[0].clientX), { passive: true });
+    wrap.addEventListener('touchmove', (e) => moveH(e.touches[0].clientX), { passive: true });
+    wrap.addEventListener('touchend', up);
+    wrap.addEventListener('mousemove', (e) => { const r = wrap.getBoundingClientRect(); tiltXt = -(((e.clientY - r.top) / r.height) - 0.5) * 14; });
+    wrap.addEventListener('mouseleave', () => { tiltXt = 0; });
+  }
+
+  _initTilt() {
+    document.querySelectorAll('[data-tilt]').forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = `perspective(900px) rotateY(${px * 11}deg) rotateX(${-py * 11}deg) translateZ(14px)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg)'; });
+    });
+  }
+
+  _initMagnet() {
+    document.querySelectorAll('[data-magnet]').forEach((btn) => {
+      btn.style.transition = 'transform .3s cubic-bezier(.16,1,.3,1)';
+      btn.addEventListener('mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        const mx = e.clientX - r.left - r.width / 2;
+        const my = e.clientY - r.top - r.height / 2;
+        btn.style.transform = `translate(${mx * 0.35}px,${my * 0.45}px)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0,0)'; });
+    });
+  }
+
+  _initReveal() {
+    if (this._revealDone) return;
+    this._revealDone = true;
+    const els = document.querySelectorAll('[data-reveal]');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          en.target.style.opacity = '1';
+          en.target.style.transform = 'none';
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(el => io.observe(el));
+    if (this._bindHovers) this._bindHovers();
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this._raf);
+    cancelAnimationFrame(this._curRaf);
+    cancelAnimationFrame(this._d3raf);
+    cancelAnimationFrame(this._lpRaf);
+    cancelAnimationFrame(this._sparkRaf);
+    cancelAnimationFrame(this._ctRaf);
+    cancelAnimationFrame(this._fxRaf);
+    cancelAnimationFrame(this._idRaf);
+    cancelAnimationFrame(this._globeRaf);
+    clearInterval(this._idleInt);
+    clearTimeout(this._survT);
+    cancelAnimationFrame(this._spotRaf);
+    cancelAnimationFrame(this._skewRaf);
+    if (this._onSurvKey) window.removeEventListener('keydown', this._onSurvKey);
+    if (this._onCmdKey) window.removeEventListener('keydown', this._onCmdKey);
+    if (this._onScrollSkew) window.removeEventListener('scroll', this._onScrollSkew);
+    if (this._onScrollUx) window.removeEventListener('scroll', this._onScrollUx);
+    if (this._globeRO) this._globeRO.disconnect();
+    clearInterval(this._clock);
+    window.removeEventListener('keydown', this._onKey);
+  }
+
+  renderVals() {
+    const { count, loaded } = this.state;
+    const fmt = (n) => '₪' + Number(n).toLocaleString('en-US');
+    const el = React.createElement;
+    const P = this.state.modalKey ? this.PRODUCTS[this.state.modalKey] : null;
+    const cartItems = this.state.cart.map((it, idx) => ({
+      name: it.name, code: it.code, sizeLabel: 'Size ' + it.size,
+      qtyLabel: '×' + it.qty, lineTotal: fmt(it.price * it.qty),
+      imgEl: el('img', { src: it.img, alt: it.name, style: { width: '100%', height: '100%', objectFit: 'cover' } }),
+      onRemove: () => this.removeItem(idx)
+    }));
+    const cartCount = this.state.cart.reduce((a, b) => a + b.qty, 0);
+    const sizes = ['S', 'M', 'L', 'XL'].map(s => ({
+      label: s,
+      bg: this.state.modalSize === s ? '#EDE8DF' : 'transparent',
+      fg: this.state.modalSize === s ? '#15120D' : '#cbc4ba',
+      bd: this.state.modalSize === s ? '#EDE8DF' : '#4a4339',
+      onPick: () => this.setSize(s)
+    }));
+    const panels = this.LOOKS.map((L, i) => ({
+      label: L.label, sub: L.sub, idx: String(i + 1).padStart(2, '0'),
+      grow: this.state.activePanel === i ? 5 : 1,
+      revealO: this.state.activePanel === i ? 1 : 0,
+      imgEl: el('img', { src: L.img, alt: L.label, style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 22%' } }),
+      onClick: () => this.openLook(i), onEnter: () => this.setPanel(i)
+    }));
+    const open = {
+      moon: () => this.openProduct('moon'), reality: () => this.openProduct('reality'),
+      redeemer: () => this.openProduct('redeemer'), sheep: () => this.openProduct('sheep')
+    };
+    const LB = this.state.lightbox;
+    const nm = (this.state.idName || '').trim();
+    const idDisplay = nm ? nm.toUpperCase() : 'SURVIVOR';
+    let hsh = 0; for (let i = 0; i < idDisplay.length; i++) hsh = (hsh * 31 + idDisplay.charCodeAt(i)) >>> 0;
+    const idMember = 'TOS-' + ((hsh % 9000) + 1000);
+    const idBars = []; let bb = hsh || 7;
+    for (let i = 0; i < 26; i++) { bb = (bb * 1103515245 + 12345) >>> 0; const tall = (bb & 1) ? 24 : (bb & 2 ? 15 : 9), wd = (bb & 4) ? 3 : 1.5; idBars.push(el('span', { key: i, style: { width: wd + 'px', height: tall + 'px', background: '#EDE8DF', opacity: 0.85 } })); }
+    const _mon = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'], _d = new Date();
+    const idIssued = _mon[_d.getMonth()] + ' ' + _d.getFullYear();
+    const mImgEl = P ? el('img', { src: P.img, alt: P.name, style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }) : null;
+    const lbImgEl = LB ? el('img', { src: LB.img, alt: LB.label, onClick: (e) => e.stopPropagation(), style: { maxWidth: '100%', maxHeight: '78vh', objectFit: 'contain', borderRadius: '3px', boxShadow: '0 40px 120px rgba(0,0,0,.7)', animation: 'tos-pop .5s cubic-bezier(.16,1,.3,1) both' } }) : null;
+    const co = this.state.creedOpen;
+    return {
+      mImgEl, lbImgEl,
+      creed0Open: co === 0, creed1Open: co === 1, creed2Open: co === 2, creed3Open: co === 3,
+      creedRot0: co === 0 ? '45deg' : '0deg', creedRot1: co === 1 ? '45deg' : '0deg', creedRot2: co === 2 ? '45deg' : '0deg', creedRot3: co === 3 ? '45deg' : '0deg',
+      creedToggle0: () => this.toggleCreed(0), creedToggle1: () => this.toggleCreed(1), creedToggle2: () => this.toggleCreed(2), creedToggle3: () => this.toggleCreed(3),
+      idName: this.state.idName, idDisplay, idMember, idBars, idIssued,
+      onIdInput: (e) => this.setState({ idName: e.target.value }),
+      survMode: this.state.survMode, idle: this.state.idle,
+      scrollW: this.state.scrollPct + '%',
+      menuOpen: this.state.menuOpen, menuX: this.state.menuOpen ? '0%' : '100%',
+      onToggleMenu: () => this.toggleMenu(), onCloseMenu: () => this.setState({ menuOpen: false }),
+      navItems: [['top', 'Home'], ['showroom', 'The Looks'], ['drop', 'Drop 001'], ['creed', 'The Creed'], ['lookbook', 'Lookbook'], ['claim', 'ID Card'], ['contact', 'Contact']].map(([id, label]) => ({
+        id, label, active: this.state.activeSec === id,
+        dot: this.state.activeSec === id ? '#C1442E' : 'transparent',
+        col: this.state.activeSec === id ? '#EDE8DF' : '#9a948b',
+        onJump: () => this.navJump(id)
+      })),
+      navActive: (id) => this.state.activeSec === id,
+      creedActive: this.state.activeSec === 'creed' ? '#C1442E' : 'transparent',
+      dropActive: this.state.activeSec === 'drop' ? '#C1442E' : 'transparent',
+      showroomActive: this.state.activeSec === 'showroom' ? '#C1442E' : 'transparent',
+      lookbookActive: this.state.activeSec === 'lookbook' ? '#C1442E' : 'transparent',
+      claimActive: this.state.activeSec === 'claim' ? '#C1442E' : 'transparent',
+      contactActive: this.state.activeSec === 'contact' ? '#C1442E' : 'transparent',
+      cmdOpen: this.state.cmdOpen, cmdQuery: this.state.cmdQuery,
+      onOpenCmd: () => this._openCmd(), onCloseCmd: () => this.setState({ cmdOpen: false }),
+      onCmdInput: (e) => this.setState({ cmdQuery: e.target.value, cmdIndex: 0 }),
+      cmdEmpty: this._filteredCmds().length === 0,
+      cmdItems: this._filteredCmds().map((c, idx) => ({
+        g: c.g, label: c.label, cat: c.cat,
+        bg: idx === this.state.cmdIndex ? 'rgba(237,232,223,.09)' : 'transparent',
+        onRun: () => this._runCmd(c), onHover: () => this.setState({ cmdIndex: idx })
+      })),
+      stop: (e) => e.stopPropagation(),
+      panels, open,
+      modalOpen: !!P,
+      mName: P ? P.name : '', mCode: P ? P.code : '', mPrice: P ? fmt(P.price) : '',
+      mDesc: P ? P.desc : '', mImg: P ? P.img : '', mBg: P ? P.bg : '#0E0C09',
+      sizes,
+      onAddToCart: () => this.addToCart(),
+      onCloseModal: () => this.closeModal(),
+      onViewArt: () => { if (P) this.openLightbox(P.look, P.name, 'The artwork behind the piece'); },
+      cartItems, emptyCart: cartCount === 0,
+      cartCount: cartCount ? String(cartCount) : '',
+      cartTotal: fmt(this.state.cart.reduce((a, b) => a + b.price * b.qty, 0)),
+      cartX: this.state.cartOpen ? '0%' : '106%',
+      scrimO: this.state.cartOpen ? 1 : 0, scrimPE: this.state.cartOpen ? 'auto' : 'none',
+      onOpenCart: () => this.openCart(), onCloseCart: () => this.closeCart(),
+      onCheckout: () => this.setState({ cartNote: true }), cartNote: this.state.cartNote,
+      lbOpen: !!LB, lbImg: LB ? LB.img : '', lbLabel: LB ? LB.label : '', lbSub: LB ? LB.sub : '',
+      onCloseLightbox: () => this.closeLightbox(),
+      lb: {
+        still: () => this.openLightbox('images/still.png', 'Salt & Map', 'The Vault'),
+        contact: () => this.openLightbox('images/contact.png', 'Contact Sheet', 'The Vault'),
+        lineup: () => this.openLightbox('images/lineup.png', 'Wear the Scar', 'Lookbook · SS26'),
+        group: () => this.openLightbox('images/group.png', 'Made for Dreamers', 'Campaign · SS26')
+      },
+      count,
+      progressW: count + '%',
+      loaderShift: loaded ? '-101%' : '0%',
+      cursorRef: (el) => { this.cursorRef = el; },
+      loaderRef: (el) => { this.loaderRef = el; },
+      noop: (e) => {},
+      email: this.state.email,
+      subLabel: this.state.subscribed ? "You're in ✶" : "Enlist →",
+      onEmail: (e) => this.setState({ email: e.target.value }),
+      onSubscribe: (e) => { e.preventDefault(); this.setState({ subscribed: true }); },
+      cName: this.state.cName, cEmail: this.state.cEmail, cMsg: this.state.cMsg,
+      onCName: (e) => this.setState({ cName: e.target.value }),
+      onCEmail: (e) => this.setState({ cEmail: e.target.value }),
+      onCMsg: (e) => this.setState({ cMsg: e.target.value }),
+      onContactSubmit: (e) => { e.preventDefault(); this.setState({ cSent: true }); },
+      contactBtn: this.state.cSent ? 'Signal received ✶' : 'Transmit →'
+    };
+  }
+}
+</script>
+</body>
+</html>
